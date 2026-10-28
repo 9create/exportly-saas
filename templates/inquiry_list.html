@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Inquiries - Exportly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; } </style>
+</head>
+<body class="bg-[#f5f5f7] text-gray-900 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <span class="text-xl font-semibold tracking-tight">Exportly Dashboard</span>
+        <div class="flex items-center gap-4">
+            <a href="{% url 'dashboard' %}" class="text-sm text-blue-600 hover:underline">Back to Dashboard</a>
+            <a href="{% url 'logout' %}" class="text-sm font-medium text-red-600 hover:text-red-700">Logout</a>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold">Buyer Inquiries</h1>
+            <p class="text-gray-500 mt-2">Manage messages from potential buyers here.</p>
+        </div>
+
+        {% if inquiries %}
+            <div class="space-y-4">
+                {% for inquiry in inquiries %}
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">{{ inquiry.buyer_name }}</h3>
+                                <p class="text-sm text-gray-500">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
+                            </div>
+                            <span class="text-xs text-gray-400 bg-gray-50 px-3 py-1 rounded-full">{{ inquiry.created_at|date:"d M Y, H:i" }}</span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl text-gray-700">
+                            {{ inquiry.message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center">
+                <p class="text-gray-500 text-lg mb-2">No inquiries yet.</p>
+                <p class="text-sm text-gray-400">When a buyer sends you a message, it will appear here.</p>
+            </div>
+        {% endif %}
+    </main>
+
+</body>
+</html>

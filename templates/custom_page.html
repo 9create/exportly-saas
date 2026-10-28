@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} - {{ exporter.company_name|default:exporter.username }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; } </style>
+</head>
+<body class="bg-[#f5f5f7] text-gray-900 min-h-screen">
+
+    <!-- Simple Header for Custom Page -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'public_site' exporter.username %}" class="text-xl font-bold tracking-tight text-gray-900">
+                {{ exporter.company_name|default:exporter.username }}
+            </a>
+            <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium text-blue-600 hover:underline">
+                &larr; Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="max-w-4xl mx-auto px-6 py-16">
+        <div class="bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
+            <h1 class="text-4xl font-bold text-gray-900 mb-6">{{ page.title }}</h1>
+            <div class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">
+                {{ page.content }}
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 py-8 text-center text-gray-500 text-sm mt-12">
+        <p>&copy; 2026 {{ exporter.company_name|default:exporter.username }}. All rights reserved.</p>
+        <p class="mt-2">Powered by <strong>Exportly</strong></p>
+    </footer>
+
+</body>
+</html>
