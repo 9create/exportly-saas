@@ -24,10 +24,10 @@
         } 
     </style>
 </head>
-<body class="{% if exporter.template_choice == 'modern' %}bg-gray-900 text-white{% else %}bg-[#f5f5f7] text-gray-900{% endif %}">
+<body class="{% if exporter.template_choice == 'minimal' %}bg-white text-black{% elif exporter.template_choice == 'modern' %}bg-gray-900 text-white{% else %}bg-[#f5f5f7] text-gray-900{% endif %}">
 
     <!-- 1. Premium Navigation Menu (Apple Glass Effect) -->
-    <nav class="{% if exporter.template_choice == 'modern' %}bg-gray-900/70 border-gray-800{% else %}bg-white/70 border-gray-200/50{% endif %} backdrop-blur-xl border-b sticky top-0 z-50 transition-all duration-300">
+    <nav class="{% if exporter.template_choice == 'minimal' %}bg-white border-gray-200 shadow-sm{% elif exporter.template_choice == 'modern' %}bg-gray-900/70 border-gray-800{% else %}bg-white/70 border-gray-200/50{% endif %} {% if exporter.template_choice != 'minimal' %}backdrop-blur-xl{% endif %} border-b sticky top-0 z-50 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white hover:text-blue-400{% else %}text-gray-900 hover:text-blue-600{% endif %} transition-colors">
                 {{ exporter.company_name|default:exporter.username }}
@@ -81,7 +81,7 @@
 
     <!-- 3. Premium Profile Info Card (Floating) -->
     <div class="max-w-5xl mx-auto px-6 relative -mt-24 z-10">
-        <div data-aos="fade-up" class="{% if exporter.template_choice == 'modern' %}bg-gray-800/90 border-gray-700{% else %}bg-white/90 border-white/60{% endif %} backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 hover:-translate-y-1 transition-transform duration-500">
+        <div data-aos="fade-up" class="{% if exporter.template_choice == 'minimal' %}bg-white border border-gray-200 rounded-2xl shadow-none{% elif exporter.template_choice == 'modern' %}bg-gray-800/90 border-gray-700 rounded-3xl shadow-2xl{% else %}bg-white/90 border-white/60 rounded-3xl shadow-2xl{% endif %} {% if exporter.template_choice != 'minimal' %}backdrop-blur-xl{% endif %} p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 hover:-translate-y-1 transition-transform duration-500">
             <div class="text-center md:text-left">
                 <h1 class="text-4xl font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} tracking-tight">{{ exporter.company_name|default:"My Export Company" }}</h1>
                 <p class="{% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-3 flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm font-medium">

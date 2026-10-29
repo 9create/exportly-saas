@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from products.models import Product
 from django.utils.text import slugify
+from django.utils import timezone
+from datetime import timedelta
 
 
 def signup_view(request):
@@ -14,11 +16,14 @@ def signup_view(request):
         password = request.POST.get('password')
         company_name = request.POST.get('company_name')
         
+        # Naya user banate waqt Trial set karo
         user = User.objects.create_user(
             username=username, 
             email=email,
             password=password,
-            company_name=company_name
+            company_name=company_name,
+            current_plan='pro', # Trial ke liye pro set kiya
+            trial_ends_at=timezone.now() + timedelta(days=7) # 7 din baad ki date
         )
         return redirect('home')
         

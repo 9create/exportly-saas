@@ -1,12 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Product
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from groq import Groq
 from django.conf import settings
+from django.contrib import messages # <-- Ye naya import add kiya hai
 import json
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -15,6 +14,14 @@ import datetime
 @login_required(login_url='login')
 def add_product_view(request):
     if request.method == 'POST':
+        # --- FREE PLAN LIMIT CHECK ---
+        if request.user.effective_plan == 'free':
+            product_count = Product.objects.filter(exporter=request.user).count()
+            if product_count >= 5:
+                messages.error(request, "Free plan is limited to 5 products. Please upgrade to Pro for unlimited access.")
+                return redirect('dashboard')
+        # -----------------------------
+
         name = request.POST.get('name')
         description = request.POST.get('description')
         price = request.POST.get('price')

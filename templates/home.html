@@ -23,6 +23,9 @@
             <a href="{% url 'home' %}" class="text-2xl font-bold tracking-tight text-gray-900">Exportly</a>
             
             <div class="flex items-center space-x-6">
+                <!-- Naya Pricing Link -->
+                <a href="#pricing" class="text-sm font-medium text-gray-600 hover:text-black transition">Pricing</a>
+
                 {% if user.is_authenticated %}
                     <a href="{% url 'dashboard' %}" class="text-sm font-medium text-gray-700 hover:text-black transition">Dashboard</a>
                 {% else %}
@@ -102,11 +105,104 @@
         </div>
     </section>
 
+        <!-- 3.5 Premium Pricing Section -->
+    <section id="pricing" class="py-24 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 flex flex-col items-center">
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">Simple, transparent pricing</h2>
+                <p class="text-gray-500 mt-4 text-lg">Start for free, upgrade when you're ready to grow.</p>
+                
+                <!-- Monthly / Yearly Toggle -->
+                <div class="flex items-center gap-2 mt-8 bg-gray-100 p-1.5 rounded-full border border-gray-200">
+                    <button id="btn-monthly" onclick="setPlan('monthly')" class="px-6 py-2 rounded-full text-sm font-semibold transition bg-white shadow-sm text-gray-900">Monthly</button>
+                    <button id="btn-yearly" onclick="setPlan('yearly')" class="px-6 py-2 rounded-full text-sm font-semibold transition text-gray-500 hover:text-gray-900">Yearly <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full ml-1">Save 25%</span></button>
+                </div>
+            </div>
+
+            <!-- Dynamic Pricing Cards Loop -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                {% for plan in pricing_plans %}
+                    
+                    <!-- Card Layout (Dynamic) -->
+                    <div class="{% if plan.is_popular %}bg-gray-900 border-gray-800 shadow-2xl relative flex flex-col transform md:-translate-y-4{% else %}bg-white border-gray-200 shadow-sm flex flex-col{% endif %} p-8 rounded-3xl border">
+                        
+                        <!-- Most Popular Badge -->
+                        {% if plan.is_popular %}
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full tracking-wide">MOST POPULAR</div>
+                        {% endif %}
+
+                        <!-- Plan Name & Desc -->
+                        <h3 class="text-lg font-bold {% if plan.is_popular %}text-white{% else %}text-gray-900{% endif %} mb-2">{{ plan.name }}</h3>
+                        <p class="{% if plan.is_popular %}text-gray-400{% else %}text-gray-500{% endif %} text-sm mb-6">{{ plan.description|default:"" }}</p>
+                        
+                        <!-- Price (Monthly/Yearly handled by JS) -->
+                        <div class="mb-6">
+                            {% if plan.price_monthly_inr == 0 and plan.name == "Enterprise" %}
+                                <!-- Enterprise ka Custom Price -->
+                                <span class="text-4xl font-bold {% if plan.is_popular %}text-white{% else %}text-gray-900{% endif %}">Custom</span>
+                            {% else %}
+                                <span class="text-4xl font-bold {% if plan.is_popular %}text-white{% else %}text-gray-900{% endif %} plan-price" 
+                                      data-monthly="₹{{ plan.price_monthly_inr|floatformat:'-2' }}" 
+                                      data-yearly="₹{{ plan.price_yearly_inr|floatformat:'-2' }}">
+                                    ₹{{ plan.price_monthly_inr|floatformat:'-2' }}
+                                </span>
+                                <span class="plan-period {% if plan.is_popular %}text-gray-400{% else %}text-gray-500{% endif %} text-sm">/month</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Features List -->
+                        <ul class="text-sm {% if plan.is_popular %}text-gray-300{% else %}text-gray-600{% endif %} space-y-3 mb-8 flex-1">
+                            {% for feature in plan.features_list %}
+                                <li class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 {% if plan.is_popular %}text-blue-400{% else %}text-green-500{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                    {{ feature }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- Button -->
+                        {% if plan.name == "Enterprise" %}
+                            <a href="mailto:hello@exportly.com" class="block text-center w-full {% if plan.is_popular %}bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30{% else %}bg-white border-2 border-gray-200 text-gray-900 hover:bg-gray-50{% endif %} py-3 rounded-xl font-semibold transition">{{ plan.button_text }}</a>
+                        {% else %}
+                            <a href="{% url 'signup' %}" class="block text-center w-full {% if plan.is_popular %}bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/30{% else %}bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-50{% endif %} py-3 rounded-xl font-semibold transition">{{ plan.button_text }}</a>
+                        {% endif %}
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </section>
     <!-- 4. Footer -->
     <footer class="bg-white border-t border-gray-100 py-10 text-center text-gray-500 text-sm">
         <p class="font-medium">&copy; 2026 Exportly. All rights reserved.</p>
         <p class="mt-2 text-xs text-gray-400">Empowering new exporters globally.</p>
     </footer>
 
+    <!-- Pricing Toggle JavaScript -->
+        <!-- Pricing Toggle JavaScript (Dynamic) -->
+    <script>
+        function setPlan(plan) {
+            const btnMonthly = document.getElementById('btn-monthly');
+            const btnYearly = document.getElementById('btn-yearly');
+
+            // Saare dynamic prices ko select karo
+            const prices = document.querySelectorAll('.plan-price');
+            const periods = document.querySelectorAll('.plan-period');
+
+            if (plan === 'monthly') {
+                prices.forEach(p => p.innerText = p.getAttribute('data-monthly'));
+                periods.forEach(p => p.innerText = '/month');
+                
+                btnMonthly.className = "px-6 py-2 rounded-full text-sm font-semibold transition bg-white shadow-sm text-gray-900";
+                btnYearly.className = "px-6 py-2 rounded-full text-sm font-semibold transition text-gray-500 hover:text-gray-900";
+            } else if (plan === 'yearly') {
+                prices.forEach(p => p.innerText = p.getAttribute('data-yearly'));
+                periods.forEach(p => p.innerText = '/year');
+                
+                btnYearly.className = "px-6 py-2 rounded-full text-sm font-semibold transition bg-white shadow-sm text-gray-900";
+                btnMonthly.className = "px-6 py-2 rounded-full text-sm font-semibold transition text-gray-500 hover:text-gray-900";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -70,6 +70,25 @@
             </div>
 
             <div class="flex items-center gap-4">
+                <!-- Plan Badge (Strictly Dynamic) -->
+                {% if request.user.is_trial_active %}
+                    <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full border border-blue-200 hidden md:block">
+                        Pro Trial (Ends {{ request.user.trial_ends_at|date:"d M" }})
+                    </span>
+                {% elif request.user.effective_plan == 'pro' %}
+                    <span class="bg-green-50 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full border border-green-200 hidden md:block">
+                        Pro Plan Active
+                    </span>
+                {% elif request.user.effective_plan == 'enterprise' %}
+                    <span class="bg-purple-50 text-purple-700 text-xs font-bold px-3 py-1.5 rounded-full border border-purple-200 hidden md:block">
+                        Enterprise
+                    </span>
+                {% else %}
+                    <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-full border border-gray-200 hidden md:block">
+                        Free Plan
+                    </span>
+                {% endif %}
+
                 <span class="text-sm font-medium text-gray-500 hidden md:block">Hello, <strong class="text-gray-900">{{ request.user.company_name|default:request.user.username }}</strong></span>
                 <a href="{% url 'update_profile' %}" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition">Edit Profile</a>
             </div>
@@ -78,6 +97,16 @@
         <!-- Scrollable Main Area -->
         <main class="flex-1 overflow-y-auto p-4 md:p-8">
             
+            <!-- Django Messages (Error/Success) -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-800{% else %}bg-green-50 border-green-200 text-green-800{% endif %} border px-4 py-3 rounded-xl mb-6 flex items-center gap-3 shadow-sm">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{% if message.tags == 'error' %}M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z{% else %}M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z{% endif %}"></path></svg>
+                        <span class="font-medium text-sm">{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <!-- Welcome Section -->
             <div class="mb-8">
                 <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">Welcome back!</h1>
@@ -250,20 +279,27 @@
                         </div>
                     </div>
 
-                    <!-- Theme 3: Minimal -->
-                    <div class="relative bg-gray-50 rounded-2xl border-2 border-gray-200 opacity-70 overflow-hidden cursor-not-allowed">
-                        <div class="absolute top-3 right-3 bg-gray-200 text-gray-500 text-xs font-bold px-2.5 py-1 rounded-full z-10">Soon</div>
+                    <!-- Theme 3: Minimal (Now Active) -->
+                    <div class="relative bg-white rounded-2xl border-2 {% if request.user.template_choice == 'minimal' %}border-blue-600 shadow-md{% else %}border-gray-200 hover:border-gray-300 shadow-sm{% endif %} transition-all duration-300 overflow-hidden group">
+                        {% if request.user.template_choice == 'minimal' %}
+                            <div class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full z-10">Active</div>
+                        {% endif %}
                         
                         <div class="h-32 bg-white p-4 flex flex-col gap-2">
-                            <div class="w-1/3 h-3 bg-gray-300 rounded-full mx-auto mt-4"></div>
-                            <div class="w-2/3 h-2 bg-gray-100 rounded-full mx-auto"></div>
-                            <div class="w-1/2 h-2 bg-gray-100 rounded-full mx-auto"></div>
+                            <div class="w-1/2 h-3 bg-gray-800 rounded-sm"></div>
+                            <div class="w-full h-2 bg-gray-200 rounded-sm"></div>
+                            <div class="w-3/4 h-2 bg-gray-200 rounded-sm"></div>
+                            <div class="mt-2 w-16 h-6 border-2 border-gray-800 rounded-sm"></div>
                         </div>
                         
-                        <div class="p-5 border-t border-gray-200">
-                            <h3 class="font-bold text-gray-500">Minimal</h3>
-                            <p class="text-xs text-gray-400 mt-1 mb-4">Ultra-clean layout with maximum whitespace.</p>
-                            <button class="w-full bg-gray-200 text-gray-500 py-2 rounded-lg text-sm font-semibold cursor-not-allowed">Coming Soon</button>
+                        <div class="p-5 border-t border-gray-100">
+                            <h3 class="font-bold text-gray-900">Minimal</h3>
+                            <p class="text-xs text-gray-500 mt-1 mb-4">Ultra-clean layout with maximum whitespace.</p>
+                            {% if request.user.template_choice == 'minimal' %}
+                                <button class="w-full bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-semibold cursor-default">Currently Active</button>
+                            {% else %}
+                                <a href="{% url 'change_theme' 'minimal' %}" class="block text-center w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition">Select Theme</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
