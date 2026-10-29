@@ -10,10 +10,17 @@
 </head>
 <body class="bg-[#f9fafb] text-gray-900 h-screen flex overflow-hidden">
 
-    <!-- 1. LEFT SIDEBAR (Same as Dashboard) -->
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
-        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- 1. LEFT SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col h-full transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out">
+        <div class="h-16 flex items-center justify-between px-6 border-b border-gray-100">
             <a href="{% url 'dashboard' %}" class="text-2xl font-bold tracking-tight text-blue-600">Exportly</a>
+            <!-- Close Button (Mobile Only) -->
+            <button class="md:hidden text-gray-500 hover:text-gray-900" onclick="toggleSidebar()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
 
         <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
@@ -49,42 +56,49 @@
     </aside>
 
     <!-- 2. RIGHT MAIN CONTENT -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <div class="flex-1 flex flex-col h-full overflow-hidden w-full">
         
         <!-- Top Header -->
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
-            <h2 class="text-lg font-semibold text-gray-800">Buyer Inquiries</h2>
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8">
             <div class="flex items-center gap-4">
-                <span class="text-sm font-medium text-gray-500">Hello, <strong class="text-gray-900">{{ request.user.company_name|default:request.user.username }}</strong></span>
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-600 hover:text-gray-900" onclick="toggleSidebar()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h2 class="text-lg font-semibold text-gray-800 hidden md:block">Buyer Inquiries</h2>
+                <span class="md:hidden font-bold text-xl text-blue-600">Exportly</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-gray-500 hidden md:block">Hello, <strong class="text-gray-900">{{ request.user.company_name|default:request.user.username }}</strong></span>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-8">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8">
             <div class="mb-8">
-                <h1 class="text-2xl font-bold tracking-tight text-gray-900">Manage Messages</h1>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">Manage Messages</h1>
                 <p class="text-gray-500 mt-1">Read and respond to inquiries from potential buyers.</p>
             </div>
 
             {% if inquiries %}
                 <div class="space-y-4">
                     {% for inquiry in inquiries %}
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                            <div class="flex justify-between items-start mb-4">
+                        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <div class="flex flex-col md:flex-row justify-between items-start mb-4 gap-2">
                                 <div>
                                     <h3 class="text-lg font-bold text-gray-900">{{ inquiry.buyer_name }}</h3>
-                                    <p class="text-sm text-gray-500">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
+                                    <p class="text-sm text-gray-500 break-all">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} <br class="md:hidden"> | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
                                 </div>
                                 <span class="text-xs font-medium text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">{{ inquiry.created_at|date:"d M Y, H:i" }}</span>
                             </div>
-                            <div class="bg-gray-50 p-4 rounded-xl text-gray-700 border border-gray-100">
+                            <div class="bg-gray-50 p-4 rounded-xl text-gray-700 border border-gray-100 text-sm md:text-base">
                                 {{ inquiry.message }}
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center mt-8">
+                <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100 text-center mt-8">
                     <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
@@ -94,6 +108,17 @@
             {% endif %}
         </main>
     </div>
+
+    <!-- Sidebar Toggle JavaScript -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+    </script>
 
 </body>
 </html>
