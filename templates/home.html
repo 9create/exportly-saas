@@ -1,71 +1,112 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exportly - Build Your Export Website</title>
+    <title>Exportly - Build Your Export Website in 1 Click</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Apple jaisa smooth font aur clean look */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } 
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
     </style>
 </head>
-<body class="bg-[#f5f5f7] text-gray-900">
+<body class="bg-[#fafafa] text-gray-900">
 
-    <!-- Navbar (Apple style - Glass effect) -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-6 h-14 flex justify-between items-center">
-            <div class="flex items-center">
-                <span class="text-xl font-semibold tracking-tight">Exportly</span>
-            </div>
-            <div class="flex space-x-6 items-center">
+    <!-- 1. Premium Glass Navbar -->
+    <nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-lg border-b border-gray-200/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold tracking-tight text-gray-900">Exportly</a>
+            
+            <div class="flex items-center space-x-6">
                 {% if user.is_authenticated %}
-                    <!-- Agar login hai -->
-                    <a href="{% url 'dashboard' %}" class="text-sm font-medium text-gray-900 hover:text-blue-600 transition">Dashboard</a>
+                    <a href="{% url 'dashboard' %}" class="text-sm font-medium text-gray-700 hover:text-black transition">Dashboard</a>
                 {% else %}
-                    <!-- Agar login nahi hai -->
-                    <a href="{% url 'login' %}" class="text-sm text-gray-500 hover:text-gray-900 transition">Login</a>
-                    <a href="{% url 'signup' %}" class="bg-black text-white px-4 py-1.5 rounded-full text-sm font-medium hover:bg-gray-800 transition">Get Started</a>
+                    <a href="{% url 'login' %}" class="text-sm font-medium text-gray-600 hover:text-black transition">Login</a>
+                    <a href="{% url 'signup' %}" class="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition shadow-sm">Get Started</a>
                 {% endif %}
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <main class="max-w-4xl mx-auto px-6 pt-32 pb-24 text-center">
+    <!-- 2. Hero Section -->
+    <main class="pt-32 pb-20 px-6 relative overflow-hidden">
+        <!-- Background Grid Pattern -->
+        <div class="absolute inset-0 bg-grid-pattern opacity-30 z-0"></div>
         
-        <!-- Small Badge -->
-        <div class="mb-6 flex justify-center">
-            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
-                Built for New Exporters
-            </span>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold mb-6">
+                <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                Trusted by Modern Exporters
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 leading-[1.1] mb-6">
+                Build your global <br class="hidden md:block"> export website in <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">1-Click.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+                The simplest B2B platform for new exporters. Get a reliable, SEO-friendly website with AI features, PDF quotations, and multi-language support without any coding.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'signup' %}" class="bg-black text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-800 hover:-translate-y-0.5 transition-all shadow-lg shadow-gray-200">
+                    Start Building Free
+                </a>
+                <a href="/site/admin/" target="_blank" class="bg-white text-gray-800 border border-gray-200 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-50 hover:-translate-y-0.5 transition-all shadow-sm">
+                    View Demo
+                </a>
+            </div>
         </div>
-
-        <!-- Main Heading -->
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
-            Your Global Business.<br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Live in 1 Click.</span>
-        </h1>
-
-        <!-- Subtitle -->
-        <p class="mt-6 text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-            The simplest way to build a professional export website. No coding, no heavy fees. Just your products, ready for the world.
-        </p>
-
-        <!-- Buttons (Apple style - Pill shaped) -->
-        <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-            <a href="{% url 'signup' %}" class="bg-blue-600 text-white px-8 py-3.5 rounded-full text-lg font-medium hover:bg-blue-700 transition shadow-sm">
-                Create My Website
-            </a>
-            <a href="#" class="bg-white text-gray-900 border border-gray-300 px-8 py-3.5 rounded-full text-lg font-medium hover:bg-gray-50 transition shadow-sm">
-                View Demo
-            </a>
-        </div>
-
     </main>
+
+    <!-- 3. Features Section -->
+    <section class="py-20 bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">Everything you need to export</h2>
+                <p class="text-gray-500 mt-4 text-lg">Built for new exporters who want to look professional from day one.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-[#fafafa] p-8 rounded-3xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">1-Click Website</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">No coding needed. Just add your products and your professional export website is ready instantly.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-[#fafafa] p-8 rounded-3xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI Descriptions</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Write product descriptions in seconds. Our built-in AI creates professional English copy for you.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-[#fafafa] p-8 rounded-3xl border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">PDF Quotations</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">Generate professional PDF quotations for buyers instantly. Win more deals with fast responses.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Footer -->
+    <footer class="bg-white border-t border-gray-100 py-10 text-center text-gray-500 text-sm">
+        <p class="font-medium">&copy; 2026 Exportly. All rights reserved.</p>
+        <p class="mt-2 text-xs text-gray-400">Empowering new exporters globally.</p>
+    </footer>
 
 </body>
 </html>

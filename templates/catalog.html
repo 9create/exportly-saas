@@ -1,0 +1,218 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Catalog - {{ exporter.company_name|default:exporter.username }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style> 
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; } 
+    </style>
+</head>
+<body class="{% if exporter.template_choice == 'modern' %}bg-gray-900 text-white{% else %}bg-[#f5f5f7] text-gray-900{% endif %} min-h-screen flex flex-col">
+
+    <!-- Premium Navigation Menu -->
+    <nav class="{% if exporter.template_choice == 'modern' %}bg-gray-900/70 border-gray-800{% else %}bg-white/70 border-gray-200/50{% endif %} backdrop-blur-xl border-b sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white hover:text-blue-400{% else %}text-gray-900 hover:text-blue-600{% endif %} transition-colors">
+                {{ exporter.company_name|default:exporter.username }}
+            </a>
+            
+            <div class="flex items-center space-x-6">
+                <!-- Home Link -->
+                <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
+                    {% trans "Home" %}
+                </a>
+
+                <!-- Catalog Link (Highlighted) -->
+                <a href="{% url 'catalog' exporter.username %}" class="text-sm font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} transition-colors duration-300">
+                    {% trans "Catalog" %}
+                </a>
+
+                <!-- Dynamic Custom Pages Loop -->
+                {% for nav_page in pages %}
+                    <a href="{% url 'custom_page' exporter.username nav_page.slug %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
+                        {{ nav_page.title }}
+                    </a>
+                {% endfor %}
+
+                <!-- Language Selector -->
+                <select id="language-selector" onchange="switchLanguage(this.value)" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                    <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>Hindi</option>
+                    <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>French</option>
+                    <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Spanish</option>
+                    <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>German</option>
+                    <option value="mr" {% if LANGUAGE_CODE == 'mr' %}selected{% endif %}>Marathi</option>
+                </select>
+
+                <!-- Currency Selector -->
+                <select id="currency-selector" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="AED">AED (د.إ)</option>
+                    <option value="INR">INR (₹)</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Products Grid -->
+    <main class="flex-grow max-w-6xl mx-auto px-6 py-16 w-full">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %}">Our Catalog</h1>
+            <p class="{% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-4 text-lg">Explore our full range of high-quality export products.</p>
+        </div>
+        
+        {% if products %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {% for product in products %}
+                    <div data-aos="fade-up" data-aos-delay="100" class="group {% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border">
+                        <div class="relative overflow-hidden h-56">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" onclick="openModal('{{ product.image.url }}')" class="cursor-zoom-in w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            {% else %}
+                                <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">No Image</div>
+                            {% endif %}
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-800 shadow-sm">
+                                MOQ: {{ product.moq }}
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} group-hover:text-blue-500 transition-colors">{{ product.name }}</h3>
+                            <p class="text-sm {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-2 line-clamp-2">{{ product.description|default:"High quality export product." }}</p>
+                            <div class="mt-5 flex justify-between items-center border-t {% if exporter.template_choice == 'modern' %}border-gray-700{% else %}border-gray-100{% endif %} pt-4">
+                                <span class="font-bold text-2xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} product-price" data-usd="{{ product.price }}">
+                                    ${{ product.price }}
+                                </span>
+                                <a href="{% url 'public_site' exporter.username %}#inquiry-form" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Get Quote &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} p-12 rounded-3xl text-center border">
+                <p class="{% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} text-lg">No products added yet.</p>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="{% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-800 text-gray-400{% else %}bg-white border-gray-100 text-gray-500{% endif %} border-t py-10 text-center text-sm mt-auto">
+        <p class="font-medium">&copy; 2026 {{ exporter.company_name|default:exporter.username }}. All rights reserved.</p>
+        <p class="mt-2 text-xs text-gray-500">Powered by <strong class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-600{% endif %}">Exportly</strong></p>
+    </footer>
+
+    <!-- Image Zoom Modal -->
+    <div id="imageModal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <button onclick="closeModal()" class="absolute top-6 right-6 text-white text-5xl hover:text-gray-300 transition-colors">&times;</button>
+        <img id="modalImage" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl cursor-zoom-in transition-transform duration-300" style="transform: scale(0.95);">
+    </div>
+
+    <!-- JavaScript for Modal with Zoom -->
+    <script>
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        let currentScale = 1;
+
+        function openModal(imageSrc) {
+            modalImg.src = imageSrc;
+            currentScale = 1; 
+            modalImg.style.transform = `scale(0.95)`;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalImg.style.transform = `scale(1)`;
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalImg.style.transform = `scale(0.95)`;
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        modalImg.addEventListener('wheel', function(e) {
+            e.preventDefault(); 
+            if (e.deltaY < 0) { currentScale += 0.2; } 
+            else { currentScale -= 0.2; }
+            if (currentScale < 1) currentScale = 1;
+            if (currentScale > 4) currentScale = 4;
+            this.style.transform = `scale(${currentScale})`;
+        });
+
+        modalImg.addEventListener('dblclick', function() {
+            if (currentScale > 1) { currentScale = 1; } 
+            else { currentScale = 2.5; }
+            this.style.transform = `scale(${currentScale})`;
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) { closeModal(); }
+        });
+    </script>
+
+    <!-- JavaScript for Currency Conversion -->
+    <script>
+        document.getElementById('currency-selector').addEventListener('change', function() {
+            const selectedCurrency = this.value;
+            const priceElements = document.querySelectorAll('.product-price');
+
+            if (selectedCurrency === 'USD') {
+                priceElements.forEach(el => {
+                    const usdPrice = parseFloat(el.getAttribute('data-usd'));
+                    el.innerHTML = `$${usdPrice.toFixed(2)}`;
+                });
+                return;
+            }
+
+            fetch('https://open.er-api.com/v6/latest/USD')
+                .then(response => response.json())
+                .then(data => {
+                    const rate = data.rates[selectedCurrency];
+                    let symbol = '';
+                    if (selectedCurrency === 'EUR') symbol = '€';
+                    else if (selectedCurrency === 'GBP') symbol = '£';
+                    else if (selectedCurrency === 'AED') symbol = 'AED ';
+                    else if (selectedCurrency === 'INR') symbol = '₹';
+
+                    priceElements.forEach(el => {
+                        const usdPrice = parseFloat(el.getAttribute('data-usd'));
+                        const convertedPrice = (usdPrice * rate).toFixed(2);
+                        el.innerHTML = `${symbol}${convertedPrice}`;
+                    });
+                })
+                .catch(error => console.error('Error fetching exchange rates:', error));
+        });
+    </script>
+
+    <!-- JavaScript for Language Switching -->
+    <script>
+        function switchLanguage(lang) {
+            let path = window.location.pathname;
+            const allLanguages = ['hi', 'fr', 'es', 'de', 'mr'];
+            let currentLangPrefix = '';
+            
+            for (let l of allLanguages) {
+                if (path.startsWith('/' + l + '/')) {
+                    currentLangPrefix = '/' + l;
+                    break;
+                }
+            }
+            if (currentLangPrefix) { path = path.replace(currentLangPrefix, ''); }
+            if (lang === 'en') { window.location.href = path; } 
+            else { window.location.href = '/' + lang + path; }
+        }
+    </script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 800, once: true });</script>
+</body>
+</html>

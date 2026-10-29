@@ -5,137 +5,268 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Exportly</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style> body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } </style>
 </head>
-<body class="bg-[#f5f5f7] text-gray-900 min-h-screen">
+<body class="bg-[#f9fafb] text-gray-900 h-screen flex overflow-hidden">
 
-    <!-- Premium Dashboard Navbar -->
-    <nav class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <span class="text-xl font-bold tracking-tight text-gray-900">Exportly Dashboard</span>
-            <div class="flex items-center gap-6">
+    <!-- 1. LEFT SIDEBAR (US LEVEL SAAS LAYOUT) -->
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
+        <!-- Logo -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <a href="{% url 'dashboard' %}" class="text-2xl font-bold tracking-tight text-blue-600">Exportly</a>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 bg-blue-50 text-blue-700 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Overview
+            </a>
+            <a href="{% url 'add_product' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                Products
+            </a>
+            <a href="{% url 'inquiry_list' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Inquiries
+            </a>
+            <a href="{% url 'add_page' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Custom Pages
+            </a>
+        </nav>
+
+        <!-- Bottom Sidebar -->
+        <div class="p-4 border-t border-gray-100 space-y-1">
+            <a href="{% url 'public_site' request.user.username %}" target="_blank" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                View Live Site
+            </a>
+            <a href="{% url 'logout' %}" class="flex items-center gap-3 text-red-600 hover:bg-red-50 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- 2. RIGHT MAIN CONTENT -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <!-- Top Header -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+            <h2 class="text-lg font-semibold text-gray-800">Dashboard Overview</h2>
+            <div class="flex items-center gap-4">
                 <span class="text-sm font-medium text-gray-500">Hello, <strong class="text-gray-900">{{ request.user.company_name|default:request.user.username }}</strong></span>
                 <a href="{% url 'update_profile' %}" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition">Edit Profile</a>
-                <a href="{% url 'logout' %}" class="text-sm font-medium text-red-600 hover:text-red-800 transition">Logout</a>
             </div>
-        </div>
-    </nav>
+        </header>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        
-        <!-- Welcome Section -->
-        <div class="mb-10">
-            <h1 class="text-4xl font-bold tracking-tight text-gray-900">Welcome to your Dashboard</h1>
-            <p class="text-gray-500 mt-2 text-lg">Manage your website, products, and inquiries from here.</p>
-        </div>
-
-        <!-- Premium Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Scrollable Main Area -->
+        <main class="flex-1 overflow-y-auto p-8">
             
-            <!-- Card 1: My Website -->
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+            <!-- Welcome Section -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">Welcome back!</h1>
+                <p class="text-gray-500 mt-1">Here is what's happening with your export business today.</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p class="text-sm font-medium text-gray-500">Total Products</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">{{ products|length }}</h3>
                 </div>
-                <h3 class="font-bold text-xl mb-2 text-gray-900">My Website</h3>
-                <p class="text-sm text-gray-500 mb-6">Your public website is ready to be shared.</p>
-                <a href="{% url 'public_site' request.user.username %}" target="_blank" class="bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-semibold w-full hover:bg-blue-700 transition block text-center">View Live Site</a>
-            </div>
-
-            <!-- Card 2: Products -->
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div class="w-12 h-12 bg-gray-100 text-gray-900 rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p class="text-sm font-medium text-gray-500">Active Theme</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2 capitalize">{{ request.user.template_choice }}</h3>
                 </div>
-                <h3 class="font-bold text-xl mb-2 text-gray-900">Products</h3>
-                <p class="text-sm text-gray-500 mb-6">Manage your export catalog and inventory.</p>
-                <a href="{% url 'add_product' %}" class="bg-black text-white px-4 py-3 rounded-xl text-sm font-semibold w-full hover:bg-gray-800 transition block text-center">Add Product</a>
-            </div>
-
-            <!-- Card 3: Inquiries -->
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <p class="text-sm font-medium text-gray-500">Custom Pages</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">{{ pages|length }}</h3>
                 </div>
-                <h3 class="font-bold text-xl mb-2 text-gray-900">Buyer Inquiries</h3>
-                <p class="text-sm text-gray-500 mb-6">Check messages from potential buyers.</p>
-                <a href="{% url 'inquiry_list' %}" class="bg-white border-2 border-gray-200 text-gray-800 px-4 py-3 rounded-xl text-sm font-semibold w-full hover:bg-gray-50 transition block text-center">View All</a>
-            </div>
-        </div>
-
-        <!-- My Products Section -->
-        <div class="mt-12">
-            <div class="flex justify-between items-end mb-4">
-                <h2 class="text-2xl font-bold text-gray-900">My Products</h2>
-                <a href="{% url 'add_product' %}" class="text-sm font-medium text-blue-600 hover:underline">+ Add New</a>
             </div>
 
-            {% if products %}
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <ul class="divide-y divide-gray-200">
-                        {% for product in products %}
-                            <li class="p-6 flex items-center justify-between hover:bg-gray-50 transition">
-                                <div>
-                                    <h3 class="text-lg font-medium text-gray-900">{{ product.name }}</h3>
-                                    <p class="text-sm text-gray-500 mt-1">{{ product.description|default:"No description provided." }}</p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <div class="text-right mr-4">
-                                        <p class="text-lg font-bold text-gray-900">${{ product.price }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">MOQ: {{ product.moq }}</p>
+            <!-- Quick Actions -->
+            <div class="flex gap-4 mb-10">
+                <a href="{% url 'add_product' %}" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-blue-700 transition shadow-sm flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Product
+                </a>
+                <a href="{% url 'add_page' %}" class="bg-white text-gray-700 border border-gray-300 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Page
+                </a>
+            </div>
+
+            <!-- My Products Section -->
+            <div class="mb-12">
+                <div class="flex justify-between items-end mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Your Products</h2>
+                    <a href="{% url 'add_product' %}" class="text-sm font-medium text-blue-600 hover:underline">+ Add New</a>
+                </div>
+
+                {% if products %}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <ul class="divide-y divide-gray-100">
+                            {% for product in products %}
+                                <li class="p-5 flex items-center justify-between hover:bg-gray-50 transition">
+                                    <div>
+                                        <h3 class="text-base font-medium text-gray-900">{{ product.name }}</h3>
+                                        <p class="text-sm text-gray-500 mt-0.5">{{ product.description|truncatechars:50|default:"No description provided." }}</p>
                                     </div>
-                                    <!-- Generate PDF Button -->
-                                    <a href="{% url 'generate_quotation' product.id %}" class="text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 p-2 rounded-lg transition" title="Download Quotation PDF">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                    </a>
-                                    <!-- Edit Button -->
-                                    <a href="{% url 'edit_product' product.id %}" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition" title="Edit Product">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                    </a>
-                                    <!-- Delete Button -->
-                                    <a href="{% url 'delete_product' product.id %}" onclick="return confirm('Are you sure you want to delete this product?');" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="Delete Product">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </a>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% else %}
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <p class="text-gray-500 mb-4">You haven't added any products yet.</p>
-                    <a href="{% url 'add_product' %}" class="bg-black text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition">Add Your First Product</a>
-                </div>
-            {% endif %}
-        </div>
-
-        <!-- My Custom Pages Section -->
-        <div class="mt-12">
-            <div class="flex justify-between items-end mb-4">
-                <h2 class="text-2xl font-bold text-gray-900">My Custom Pages</h2>
-                <a href="{% url 'add_page' %}" class="text-sm font-medium text-blue-600 hover:underline">+ Add New Page</a>
+                                    <div class="flex items-center gap-6">
+                                        <div class="text-right">
+                                            <p class="text-base font-bold text-gray-900">${{ product.price }}</p>
+                                            <p class="text-xs text-gray-500 mt-1">MOQ: {{ product.moq }}</p>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <a href="{% url 'generate_quotation' product.id %}" class="text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 p-2 rounded-lg transition" title="Download PDF">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                            </a>
+                                            <a href="{% url 'edit_product' product.id %}" class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition" title="Edit">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                            </a>
+                                            <a href="{% url 'delete_product' product.id %}" onclick="return confirm('Delete this product?');" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="Delete">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <p class="text-gray-500 mb-4">You haven't added any products yet.</p>
+                        <a href="{% url 'add_product' %}" class="bg-gray-900 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition">Add Your First Product</a>
+                    </div>
+                {% endif %}
             </div>
 
-            {% if pages %}
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <ul class="divide-y divide-gray-200">
-                        {% for page in pages %}
-                            <li class="p-4 flex justify-between items-center hover:bg-gray-50">
-                                <span class="font-medium text-gray-900">{{ page.title }}</span>
-                                <span class="text-xs text-gray-500">/{{ page.slug }}/</span>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                        <!-- Custom Pages Section (Full Width) -->
+            <div class="mb-12">
+                <div class="flex justify-between items-end mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Custom Pages</h2>
+                        <p class="text-sm text-gray-500 mt-1">Manage pages like About Us or Contacts.</p>
+                    </div>
+                    <a href="{% url 'add_page' %}" class="text-sm font-medium text-blue-600 hover:underline">+ Add New Page</a>
                 </div>
-            {% else %}
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <p class="text-gray-500">No custom pages added yet.</p>
-                </div>
-            {% endif %}
-        </div>
+                
+                {% if pages %}
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <ul class="divide-y divide-gray-100">
+                            {% for page in pages %}
+                                <li class="p-4 flex justify-between items-center hover:bg-gray-50 transition">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        </div>
+                                        <span class="font-medium text-gray-900">{{ page.title }}</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <a href="{% url 'edit_page' page.id %}" class="text-gray-500 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></a>
+                                        <a href="{% url 'delete_page' page.id %}" onclick="return confirm('Delete this page?');" class="text-gray-500 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <p class="text-gray-500 mb-4">You haven't added any custom pages yet.</p>
+                        <a href="{% url 'add_page' %}" class="bg-gray-900 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-800 transition">Add Your First Page</a>
+                    </div>
+                {% endif %}
+            </div>
 
-    </main>
+            <!-- Website Theme Section (Full Width & Premium Cards) -->
+            <div class="mb-12">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">Website Theme</h2>
+                    <p class="text-sm text-gray-500 mt-1">Choose the look and feel of your public website.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Theme 1: Classic -->
+                    <div class="relative bg-white rounded-2xl border-2 {% if request.user.template_choice == 'classic' %}border-blue-600 shadow-md{% else %}border-gray-200 hover:border-gray-300 shadow-sm{% endif %} transition-all duration-300 overflow-hidden group">
+                        {% if request.user.template_choice == 'classic' %}
+                            <div class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full z-10">Active</div>
+                        {% endif %}
+                        
+                        <!-- Mockup Preview -->
+                        <div class="h-32 bg-[#f5f5f7] p-4 flex flex-col gap-2">
+                            <div class="w-1/2 h-3 bg-gray-300 rounded-full"></div>
+                            <div class="w-full h-2 bg-gray-200 rounded-full"></div>
+                            <div class="w-3/4 h-2 bg-gray-200 rounded-full"></div>
+                            <div class="mt-2 w-16 h-6 bg-blue-600 rounded-full"></div>
+                        </div>
+                        
+                        <div class="p-5 border-t border-gray-100">
+                            <h3 class="font-bold text-gray-900">Classic</h3>
+                            <p class="text-xs text-gray-500 mt-1 mb-4">Clean, white background with blue accents.</p>
+                            {% if request.user.template_choice == 'classic' %}
+                                <button class="w-full bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-semibold cursor-default">Currently Active</button>
+                            {% else %}
+                                <a href="{% url 'change_theme' 'classic' %}" class="block text-center w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition">Select Theme</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Theme 2: Modern (Dark) -->
+                    <div class="relative bg-white rounded-2xl border-2 {% if request.user.template_choice == 'modern' %}border-blue-600 shadow-md{% else %}border-gray-200 hover:border-gray-300 shadow-sm{% endif %} transition-all duration-300 overflow-hidden group">
+                        {% if request.user.template_choice == 'modern' %}
+                            <div class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-full z-10">Active</div>
+                        {% endif %}
+                        
+                        <!-- Mockup Preview -->
+                        <div class="h-32 bg-gray-900 p-4 flex flex-col gap-2">
+                            <div class="w-1/2 h-3 bg-gray-700 rounded-full"></div>
+                            <div class="w-full h-2 bg-gray-800 rounded-full"></div>
+                            <div class="w-3/4 h-2 bg-gray-800 rounded-full"></div>
+                            <div class="mt-2 w-16 h-6 bg-blue-500 rounded-full"></div>
+                        </div>
+                        
+                        <div class="p-5 border-t border-gray-100">
+                            <h3 class="font-bold text-gray-900">Modern (Dark)</h3>
+                            <p class="text-xs text-gray-500 mt-1 mb-4">Sleek dark mode, perfect for tech & premium.</p>
+                            {% if request.user.template_choice == 'modern' %}
+                                <button class="w-full bg-blue-50 text-blue-700 py-2 rounded-lg text-sm font-semibold cursor-default">Currently Active</button>
+                            {% else %}
+                                <a href="{% url 'change_theme' 'modern' %}" class="block text-center w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-50 transition">Select Theme</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Theme 3: Minimal (Coming Soon) -->
+                    <div class="relative bg-gray-50 rounded-2xl border-2 border-gray-200 opacity-70 overflow-hidden cursor-not-allowed">
+                        <div class="absolute top-3 right-3 bg-gray-200 text-gray-500 text-xs font-bold px-2.5 py-1 rounded-full z-10">Soon</div>
+                        
+                        <!-- Mockup Preview -->
+                        <div class="h-32 bg-white p-4 flex flex-col gap-2">
+                            <div class="w-1/3 h-3 bg-gray-300 rounded-full mx-auto mt-4"></div>
+                            <div class="w-2/3 h-2 bg-gray-100 rounded-full mx-auto"></div>
+                            <div class="w-1/2 h-2 bg-gray-100 rounded-full mx-auto"></div>
+                        </div>
+                        
+                        <div class="p-5 border-t border-gray-200">
+                            <h3 class="font-bold text-gray-500">Minimal</h3>
+                            <p class="text-xs text-gray-400 mt-1 mb-4">Ultra-clean layout with maximum whitespace.</p>
+                            <button class="w-full bg-gray-200 text-gray-500 py-2 rounded-lg text-sm font-semibold cursor-not-allowed">Coming Soon</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
+
+        </main>
+    </div>
 
 </body>
 </html>

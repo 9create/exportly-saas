@@ -7,6 +7,7 @@ class User(AbstractUser):
     company_name = models.CharField(max_length=200, blank=True, null=True)
     iec_code = models.CharField(max_length=10, blank=True, null=True)
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
+    template_choice = models.CharField(max_length=50, default='classic')
     
     def __str__(self):
         return self.username

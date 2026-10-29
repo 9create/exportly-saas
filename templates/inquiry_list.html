@@ -5,49 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buyer Inquiries - Exportly</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style> body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } </style>
 </head>
-<body class="bg-[#f5f5f7] text-gray-900 min-h-screen">
+<body class="bg-[#f9fafb] text-gray-900 h-screen flex overflow-hidden">
 
-    <!-- Navbar -->
-    <nav class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-        <span class="text-xl font-semibold tracking-tight">Exportly Dashboard</span>
-        <div class="flex items-center gap-4">
-            <a href="{% url 'dashboard' %}" class="text-sm text-blue-600 hover:underline">Back to Dashboard</a>
-            <a href="{% url 'logout' %}" class="text-sm font-medium text-red-600 hover:text-red-700">Logout</a>
-        </div>
-    </nav>
-
-    <main class="max-w-5xl mx-auto px-6 py-12">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold">Buyer Inquiries</h1>
-            <p class="text-gray-500 mt-2">Manage messages from potential buyers here.</p>
+    <!-- 1. LEFT SIDEBAR (Same as Dashboard) -->
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <a href="{% url 'dashboard' %}" class="text-2xl font-bold tracking-tight text-blue-600">Exportly</a>
         </div>
 
-        {% if inquiries %}
-            <div class="space-y-4">
-                {% for inquiry in inquiries %}
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900">{{ inquiry.buyer_name }}</h3>
-                                <p class="text-sm text-gray-500">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Overview
+            </a>
+            <a href="{% url 'add_product' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                Products
+            </a>
+            <!-- Active State for Inquiries -->
+            <a href="{% url 'inquiry_list' %}" class="flex items-center gap-3 bg-blue-50 text-blue-700 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Inquiries
+            </a>
+            <a href="{% url 'add_page' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Custom Pages
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-100 space-y-1">
+            <a href="{% url 'public_site' request.user.username %}" target="_blank" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                View Live Site
+            </a>
+            <a href="{% url 'logout' %}" class="flex items-center gap-3 text-red-600 hover:bg-red-50 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- 2. RIGHT MAIN CONTENT -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <!-- Top Header -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+            <h2 class="text-lg font-semibold text-gray-800">Buyer Inquiries</h2>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-gray-500">Hello, <strong class="text-gray-900">{{ request.user.company_name|default:request.user.username }}</strong></span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-8">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold tracking-tight text-gray-900">Manage Messages</h1>
+                <p class="text-gray-500 mt-1">Read and respond to inquiries from potential buyers.</p>
+            </div>
+
+            {% if inquiries %}
+                <div class="space-y-4">
+                    {% for inquiry in inquiries %}
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">{{ inquiry.buyer_name }}</h3>
+                                    <p class="text-sm text-gray-500">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
+                                </div>
+                                <span class="text-xs font-medium text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">{{ inquiry.created_at|date:"d M Y, H:i" }}</span>
                             </div>
-                            <span class="text-xs text-gray-400 bg-gray-50 px-3 py-1 rounded-full">{{ inquiry.created_at|date:"d M Y, H:i" }}</span>
+                            <div class="bg-gray-50 p-4 rounded-xl text-gray-700 border border-gray-100">
+                                {{ inquiry.message }}
+                            </div>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-xl text-gray-700">
-                            {{ inquiry.message }}
-                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center mt-8">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="bg-white p-12 rounded-2xl shadow-sm border border-gray-100 text-center">
-                <p class="text-gray-500 text-lg mb-2">No inquiries yet.</p>
-                <p class="text-sm text-gray-400">When a buyer sends you a message, it will appear here.</p>
-            </div>
-        {% endif %}
-    </main>
+                    <p class="text-gray-900 font-medium text-lg mb-1">No inquiries yet.</p>
+                    <p class="text-gray-500 text-sm">When a buyer sends you a message, it will appear here.</p>
+                </div>
+            {% endif %}
+        </main>
+    </div>
 
 </body>
 </html>

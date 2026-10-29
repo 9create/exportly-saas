@@ -1,36 +1,69 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ exporter.company_name|default:exporter.username }} - Global Exporter</title>
+        <!-- SEO Meta Tags -->
+    <meta name="description" content="{% if exporter.company_name %}{{ exporter.company_name }}{% else %}Global Exporter{% endif %} is a leading exporter from {{ exporter.city|default:'India' }}. Explore our high-quality products for global buyers.">
+    <meta name="keywords" content="export, import, global trade, B2B, {{ exporter.company_name|default:'Exporter' }}, India, {% for product in products %}{{ product.name }}, {% endfor %}">
+    <meta property="og:title" content="{{ exporter.company_name|default:exporter.username }} - Global Exporter">
+    <meta property="og:description" content="Explore our full range of high-quality export products.">
+    <meta property="og:type" content="website">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Premium Fonts & Smooth Rendering -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- AOS Library for Scroll Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style> 
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-family: 'Inter', sans-serif; 
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
         } 
     </style>
 </head>
-<body class="bg-[#f5f5f7] text-gray-900">
+<body class="{% if exporter.template_choice == 'modern' %}bg-gray-900 text-white{% else %}bg-[#f5f5f7] text-gray-900{% endif %}">
 
     <!-- 1. Premium Navigation Menu (Apple Glass Effect) -->
-    <nav class="bg-white/70 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50 transition-all duration-300">
+    <nav class="{% if exporter.template_choice == 'modern' %}bg-gray-900/70 border-gray-800{% else %}bg-white/70 border-gray-200/50{% endif %} backdrop-blur-xl border-b sticky top-0 z-50 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight text-gray-900 transition-colors hover:text-blue-600">
+            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white hover:text-blue-400{% else %}text-gray-900 hover:text-blue-600{% endif %} transition-colors">
                 {{ exporter.company_name|default:exporter.username }}
             </a>
             
-            <div class="flex items-center space-x-8">
-                <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium text-gray-500 hover:text-black transition-colors duration-300">Home</a>
+            <div class="flex items-center space-x-6">
+                <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">{% trans "Home" %}</a>
                 
+                <!-- NAYA LINK: Catalog ke liye -->
+                <a href="{% url 'catalog' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">Catalog</a>
+
                 <!-- Dynamic Custom Pages Loop -->
                 {% for page in pages %}
-                    <a href="{% url 'custom_page' exporter.username page.slug %}" class="text-sm font-medium text-gray-500 hover:text-black transition-colors duration-300">
+                    <a href="{% url 'custom_page' exporter.username page.slug %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
                         {{ page.title }}
                     </a>
                 {% endfor %}
+
+                <!-- Language Selector -->
+                <select id="language-selector" onchange="switchLanguage(this.value)" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                    <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>Hindi</option>
+                    <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>French</option>
+                    <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Spanish</option>
+                    <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>German</option>
+                    <option value="mr" {% if LANGUAGE_CODE == 'mr' %}selected{% endif %}>Marathi</option>
+                </select>
+
+                <!-- Currency Selector -->
+                <select id="currency-selector" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="AED">AED (د.إ)</option>
+                    <option value="INR">INR (₹)</option>
+                </select>
             </div>
         </div>
     </nav>
@@ -48,10 +81,10 @@
 
     <!-- 3. Premium Profile Info Card (Floating) -->
     <div class="max-w-5xl mx-auto px-6 relative -mt-24 z-10">
-        <div class="bg-white/90 backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl shadow-gray-300/30 border border-white/60 flex flex-col md:flex-row items-center justify-between gap-6 hover:-translate-y-1 transition-transform duration-500">
+        <div data-aos="fade-up" class="{% if exporter.template_choice == 'modern' %}bg-gray-800/90 border-gray-700{% else %}bg-white/90 border-white/60{% endif %} backdrop-blur-xl p-8 md:p-10 rounded-3xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 hover:-translate-y-1 transition-transform duration-500">
             <div class="text-center md:text-left">
-                <h1 class="text-4xl font-bold text-gray-900 tracking-tight">{{ exporter.company_name|default:"My Export Company" }}</h1>
-                <p class="text-gray-500 mt-3 flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm font-medium">
+                <h1 class="text-4xl font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} tracking-tight">{{ exporter.company_name|default:"My Export Company" }}</h1>
+                <p class="{% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-3 flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm font-medium">
                     <span class="flex items-center gap-1">📍 {{ exporter.city|default:"India" }}</span>
                     {% if exporter.iec_code %}
                         <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold tracking-wide flex items-center gap-1">
@@ -63,8 +96,38 @@
             </div>
             <div class="shrink-0">
                 <a href="#inquiry-form" class="inline-block bg-blue-600 text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
-                    Send Inquiry
+                    {% trans "Send Inquiry" %}
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3.5 Trust Bar (Premium Section) -->
+    <div class="max-w-5xl mx-auto px-6 mt-12 mb-4">
+        <div data-aos="fade-up" data-aos-delay="200" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- Badge 1 -->
+            <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800/50 border-gray-700{% else %}bg-white border-gray-100{% endif %} border p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm hover:-translate-y-1 transition duration-300">
+                <svg class="w-8 h-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} text-sm">Global Shipping</span>
+                <span class="text-xs {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-1">To 20+ Countries</span>
+            </div>
+            <!-- Badge 2 -->
+            <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800/50 border-gray-700{% else %}bg-white border-gray-100{% endif %} border p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm hover:-translate-y-1 transition duration-300">
+                <svg class="w-8 h-8 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                <span class="font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} text-sm">100% Secure</span>
+                <span class="text-xs {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-1">Verified Exporter</span>
+            </div>
+            <!-- Badge 3 -->
+            <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800/50 border-gray-700{% else %}bg-white border-gray-100{% endif %} border p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm hover:-translate-y-1 transition duration-300">
+                <svg class="w-8 h-8 text-orange-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} text-sm">Fast Delivery</span>
+                <span class="text-xs {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-1">On-Time Dispatch</span>
+            </div>
+            <!-- Badge 4 -->
+            <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800/50 border-gray-700{% else %}bg-white border-gray-100{% endif %} border p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm hover:-translate-y-1 transition duration-300">
+                <svg class="w-8 h-8 text-purple-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} text-sm">B2B Support</span>
+                <span class="text-xs {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-1">Dedicated Manager</span>
             </div>
         </div>
     </div>
@@ -73,8 +136,8 @@
     <div class="max-w-5xl mx-auto px-6 mt-8">
         {% if messages %}
             {% for message in messages %}
-                <div class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl text-center shadow-sm flex items-center justify-center gap-2 animate-pulse">
-                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="{% if exporter.template_choice == 'modern' %}bg-green-900/50 border-green-700 text-green-300{% else %}bg-green-50 border-green-200 text-green-800{% endif %} border px-6 py-4 rounded-2xl text-center shadow-sm flex items-center justify-center gap-2 animate-pulse">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span><strong>Thank you!</strong> {{ message }}</span>
                 </div>
             {% endfor %}
@@ -83,12 +146,12 @@
 
     <!-- 5. Products Grid -->
     <main class="max-w-6xl mx-auto px-6 py-16">
-        <h2 class="text-3xl font-bold tracking-tight mb-8">Our Products</h2>
+        <h2 data-aos="fade-right" class="text-3xl font-bold tracking-tight mb-8 {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %}">{% trans "Our Products" %}</h2>
         
         {% if products %}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {% for product in products %}
-                    <div class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-gray-100">
+                    <div data-aos="fade-up" data-aos-delay="100" class="group {% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border">
                         <div class="relative overflow-hidden h-56">
                             {% if product.image %}
                                 <img src="{{ product.image.url }}" alt="{{ product.name }}" onclick="openModal('{{ product.image.url }}')" class="cursor-zoom-in w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
@@ -101,56 +164,58 @@
                         </div>
                         
                         <div class="p-6">
-                            <h3 class="font-bold text-xl text-gray-900 group-hover:text-blue-600 transition-colors">{{ product.name }}</h3>
-                            <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ product.description|default:"High quality export product." }}</p>
-                            <div class="mt-5 flex justify-between items-center border-t border-gray-100 pt-4">
-                                <span class="font-bold text-2xl text-gray-900">${{ product.price }}</span>
-                                <a href="#inquiry-form" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Get Quote &rarr;</a>
+                            <h3 class="font-bold text-xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} group-hover:text-blue-500 transition-colors">{{ product.name }}</h3>
+                            <p class="text-sm {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-2 line-clamp-2">{{ product.description|default:"High quality export product." }}</p>
+                            <div class="mt-5 flex justify-between items-center border-t {% if exporter.template_choice == 'modern' %}border-gray-700{% else %}border-gray-100{% endif %} pt-4">
+                                <span class="font-bold text-2xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} product-price" data-usd="{{ product.price }}">
+                                    ${{ product.price }}
+                                </span>
+                                <a href="#inquiry-form" class="text-sm font-semibold text-blue-500 hover:text-blue-600">Get Quote &rarr;</a>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="bg-white p-12 rounded-3xl text-center border border-gray-100">
-                <p class="text-gray-500 text-lg">No products added yet.</p>
+            <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} p-12 rounded-3xl text-center border">
+                <p class="{% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} text-lg">No products added yet.</p>
             </div>
         {% endif %}
     </main>
 
     <!-- 6. Premium Inquiry Form -->
-    <section id="inquiry-form" class="bg-white py-20 border-t border-gray-200">
+    <section id="inquiry-form" class="{% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-800{% else %}bg-white border-gray-200{% endif %} py-20 border-t">
         <div class="max-w-3xl mx-auto px-6">
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold tracking-tight text-gray-900">Send an Inquiry</h2>
-                <p class="text-gray-500 mt-3 text-lg">Interested in our products? Send us a message and we will get back to you.</p>
+                <h2 class="text-3xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %}">Send an Inquiry</h2>
+                <p class="{% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-3 text-lg">Interested in {% trans "Our Products" %}? Send us a message and we will get back to you.</p>
             </div>
 
-            <form method="POST" action="{% url 'submit_inquiry' exporter.username %}" class="bg-[#f5f5f7] p-8 md:p-10 rounded-3xl border border-gray-100 shadow-inner">
+            <form method="POST" action="{% url 'submit_inquiry' exporter.username %}" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-[#f5f5f7] border-gray-100{% endif %} p-8 md:p-10 rounded-3xl border shadow-inner">
                 {% csrf_token %}
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Your Name</label>
-                        <input type="text" name="buyer_name" required class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm">
+                        <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Your Name</label>
+                        <input type="text" name="buyer_name" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Your Email</label>
-                        <input type="email" name="buyer_email" required class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm">
+                        <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Your Email</label>
+                        <input type="email" name="buyer_email" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm">
                     </div>
                 </div>
 
                 <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Your Country</label>
-                    <input type="text" name="buyer_country" class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm" placeholder="e.g. USA, UAE">
+                    <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Your Country</label>
+                    <input type="text" name="buyer_country" class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm" placeholder="e.g. USA, UAE">
                 </div>
 
                 <div class="mb-8">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Message</label>
-                    <textarea name="message" rows="4" required class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm" placeholder="I am interested in buying your product..."></textarea>
+                    <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Message</label>
+                    <textarea name="message" rows="4" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm" placeholder="I am interested in buying your product..."></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300">
+                <button type="submit" class="w-full {% if exporter.template_choice == 'modern' %}bg-blue-600 hover:bg-blue-700{% else %}bg-black hover:bg-gray-800{% endif %} text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300">
                     Send Message
                 </button>
             </form>
@@ -158,10 +223,11 @@
     </section>
 
     <!-- 7. Footer -->
-    <footer class="bg-white border-t border-gray-100 py-10 text-center text-gray-500 text-sm">
+    <footer class="{% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-800 text-gray-400{% else %}bg-white border-gray-100 text-gray-500{% endif %} border-t py-10 text-center text-sm">
         <p class="font-medium">&copy; 2026 {{ exporter.company_name|default:exporter.username }}. All rights reserved.</p>
-        <p class="mt-2 text-xs text-gray-400">Powered by <strong class="text-gray-600">Exportly</strong></p>
+        <p class="mt-2 text-xs text-gray-500">Powered by <strong class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-600{% endif %}">Exportly</strong></p>
     </footer>
+
     <!-- Image Zoom Modal -->
     <div id="imageModal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <!-- Close Button -->
@@ -169,6 +235,7 @@
         <!-- Badi Image -->
         <img id="modalImage" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl cursor-zoom-in transition-transform duration-300" style="transform: scale(0.95);">
     </div>
+
     <!-- JavaScript for Modal with Zoom -->
     <script>
         const modal = document.getElementById('imageModal');
@@ -177,11 +244,9 @@
 
         function openModal(imageSrc) {
             modalImg.src = imageSrc;
-            currentScale = 1; // Har baar naya image khule toh zoom reset ho jaye
+            currentScale = 1; 
             modalImg.style.transform = `scale(0.95)`;
-            
             modal.classList.remove('hidden');
-            
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 modalImg.style.transform = `scale(1)`;
@@ -191,44 +256,98 @@
         function closeModal() {
             modal.classList.add('opacity-0');
             modalImg.style.transform = `scale(0.95)`;
-            
             setTimeout(() => {
                 modal.classList.add('hidden');
             }, 300);
         }
 
-        // 1. Mouse Scroll (Wheel) se Zoom In / Zoom Out
         modalImg.addEventListener('wheel', function(e) {
-            e.preventDefault(); // Page scroll hone se rokna
-            
-            if (e.deltaY < 0) {
-                currentScale += 0.2; // Scroll up = Zoom in
-            } else {
-                currentScale -= 0.2; // Scroll down = Zoom out
-            }
-
-            // Limit lagana (1x se 4x tak hi zoom ho)
+            e.preventDefault(); 
+            if (e.deltaY < 0) { currentScale += 0.2; } 
+            else { currentScale -= 0.2; }
             if (currentScale < 1) currentScale = 1;
             if (currentScale > 4) currentScale = 4;
-
             this.style.transform = `scale(${currentScale})`;
         });
 
-        // 2. Double Click se Zoom Toggle (Bada / Normal)
         modalImg.addEventListener('dblclick', function() {
-            if (currentScale > 1) {
-                currentScale = 1; // Agar pehle se bada hai, toh normal kardo
-            } else {
-                currentScale = 2.5; // Agar normal hai, toh 2.5x bada kardo
-            }
+            if (currentScale > 1) { currentScale = 1; } 
+            else { currentScale = 2.5; }
             this.style.transform = `scale(${currentScale})`;
         });
 
-        // 3. Bahar click karne pe band karna
         modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
+            if (e.target === this) { closeModal(); }
+        });
+    </script>
+
+    <!-- JavaScript for Currency Conversion -->
+    <script>
+        document.getElementById('currency-selector').addEventListener('change', function() {
+            const selectedCurrency = this.value;
+            const priceElements = document.querySelectorAll('.product-price');
+
+            if (selectedCurrency === 'USD') {
+                priceElements.forEach(el => {
+                    const usdPrice = parseFloat(el.getAttribute('data-usd'));
+                    el.innerHTML = `$${usdPrice.toFixed(2)}`;
+                });
+                return;
             }
+
+            fetch('https://open.er-api.com/v6/latest/USD')
+                .then(response => response.json())
+                .then(data => {
+                    const rate = data.rates[selectedCurrency];
+                    let symbol = '';
+                    if (selectedCurrency === 'EUR') symbol = '€';
+                    else if (selectedCurrency === 'GBP') symbol = '£';
+                    else if (selectedCurrency === 'AED') symbol = 'AED ';
+                    else if (selectedCurrency === 'INR') symbol = '₹';
+
+                    priceElements.forEach(el => {
+                        const usdPrice = parseFloat(el.getAttribute('data-usd'));
+                        const convertedPrice = (usdPrice * rate).toFixed(2);
+                        el.innerHTML = `${symbol}${convertedPrice}`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching exchange rates:', error);
+                });
+        });
+    </script>
+
+    <!-- JavaScript for Language Switching -->
+    <script>
+        function switchLanguage(lang) {
+            let path = window.location.pathname;
+            const allLanguages = ['hi', 'fr', 'es', 'de', 'mr'];
+            let currentLangPrefix = '';
+            
+            for (let l of allLanguages) {
+                if (path.startsWith('/' + l + '/')) {
+                    currentLangPrefix = '/' + l;
+                    break;
+                }
+            }
+
+            if (currentLangPrefix) {
+                path = path.replace(currentLangPrefix, '');
+            }
+
+            if (lang === 'en') {
+                window.location.href = path;
+            } else {
+                window.location.href = '/' + lang + path;
+            }
+        }
+    </script>
+    <!-- AOS Init Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800, // Animation ki speed
+            once: true,    // Ek baar animate hone ke baad ruk jaye
         });
     </script>
 </body>

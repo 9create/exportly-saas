@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,37 +6,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }} - {{ exporter.company_name|default:exporter.username }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style> body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style> 
+        body { 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        } 
+    </style>
 </head>
-<body class="bg-[#f5f5f7] text-gray-900 min-h-screen">
+<body class="{% if exporter.template_choice == 'modern' %}bg-gray-900 text-white{% else %}bg-[#f5f5f7] text-gray-900{% endif %} min-h-screen flex flex-col">
 
-    <!-- Simple Header for Custom Page -->
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{% url 'public_site' exporter.username %}" class="text-xl font-bold tracking-tight text-gray-900">
+    <!-- Premium Navigation Menu -->
+    <nav class="{% if exporter.template_choice == 'modern' %}bg-gray-900/70 border-gray-800{% else %}bg-white/70 border-gray-200/50{% endif %} backdrop-blur-xl border-b sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white hover:text-blue-400{% else %}text-gray-900 hover:text-blue-600{% endif %} transition-colors">
                 {{ exporter.company_name|default:exporter.username }}
             </a>
-            <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium text-blue-600 hover:underline">
-                &larr; Back to Home
-            </a>
+            
+            <div class="flex items-center space-x-6">
+                <!-- Home Link -->
+                <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
+                    {% trans "Home" %}
+                </a>
+
+                <!-- Catalog Link -->
+                <a href="{% url 'catalog' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
+                    {% trans "Catalog" %}
+                </a>
+
+                <!-- Dynamic Custom Pages Loop -->
+                {% for nav_page in pages %}
+                    <a href="{% url 'custom_page' exporter.username nav_page.slug %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
+                        {{ nav_page.title }}
+                    </a>
+                {% endfor %}
+
+                <!-- Language Selector -->
+                <select id="language-selector" onchange="switchLanguage(this.value)" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                    <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                    <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>Hindi</option>
+                    <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>French</option>
+                    <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Spanish</option>
+                    <option value="de" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>German</option>
+                    <option value="mr" {% if LANGUAGE_CODE == 'mr' %}selected{% endif %}>Marathi</option>
+                </select>
+
+                <!-- Currency Selector -->
+                <select id="currency-selector" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="AED">AED (د.إ)</option>
+                    <option value="INR">INR (₹)</option>
+                </select>
+            </div>
         </div>
     </nav>
 
     <!-- Page Content -->
-    <main class="max-w-4xl mx-auto px-6 py-16">
-        <div class="bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
-            <h1 class="text-4xl font-bold text-gray-900 mb-6">{{ page.title }}</h1>
-            <div class="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">
+    <main class="flex-grow max-w-4xl mx-auto px-6 py-16 w-full">
+        <div data-aos="fade-up" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} p-10 md:p-14 rounded-3xl shadow-sm border">
+            <h1 class="text-4xl md:text-5xl font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} mb-8 tracking-tight">{{ page.title }}</h1>
+            <div class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} leading-relaxed text-lg whitespace-pre-wrap">
                 {{ page.content }}
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-200 py-8 text-center text-gray-500 text-sm mt-12">
-        <p>&copy; 2026 {{ exporter.company_name|default:exporter.username }}. All rights reserved.</p>
-        <p class="mt-2">Powered by <strong>Exportly</strong></p>
+    <footer class="{% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-800 text-gray-400{% else %}bg-white border-gray-100 text-gray-500{% endif %} border-t py-10 text-center text-sm mt-auto">
+        <p class="font-medium">&copy; 2026 {{ exporter.company_name|default:exporter.username }}. All rights reserved.</p>
+        <p class="mt-2 text-xs text-gray-500">Powered by <strong class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-600{% endif %}">Exportly</strong></p>
     </footer>
 
+    <!-- JavaScript for Language Switching -->
+    <script>
+        function switchLanguage(lang) {
+            let path = window.location.pathname;
+            const allLanguages = ['hi', 'fr', 'es', 'de', 'mr'];
+            
+            let currentLangPrefix = '';
+            for (let l of allLanguages) {
+                if (path.startsWith('/' + l + '/')) {
+                    currentLangPrefix = '/' + l;
+                    break;
+                }
+            }
+
+            if (currentLangPrefix) {
+                path = path.replace(currentLangPrefix, '');
+            }
+
+            if (lang === 'en') {
+                window.location.href = path;
+            } else {
+                window.location.href = '/' + lang + path;
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 800, once: true });</script>
 </body>
 </html>

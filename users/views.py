@@ -108,9 +108,59 @@ def add_page_view(request):
 def custom_page_view(request, username, slug):
     # Us user ka wo specific page dhoondo
     page = get_object_or_404(SitePage, exporter__username=username, slug=slug)
+
+    pages = SitePage.objects.filter(exporter=page.exporter)
     
     context = {
         'page': page,
-        'exporter': page.exporter
+        'exporter': page.exporter,
+        'pages': pages
     }
     return render(request, 'custom_page.html', context)
+
+
+@login_required(login_url='login')
+def change_theme_view(request, theme_name):
+    # Current user ki theme update karo
+    user = request.user
+    user.template_choice = theme_name
+    user.save()
+    return redirect('dashboard')
+
+@login_required(login_url='login')
+def catalog_view(request, username):
+    exporter = get_object_or_404(User, username=username)
+    products = Product.objects.filter(exporter=exporter)
+
+    pages = SitePage.objects.filter(exporter=exporter)
+    
+    context = {
+        'exporter': exporter,
+        'products': products,
+        'pages': pages
+    }
+    return render(request, 'catalog.html', context)
+
+@login_required(login_url='login')
+def edit_page_view(request, page_id):
+    # Current user ka page dhoondo
+    page = get_object_or_404(SitePage, id=page_id, exporter=request.user)
+    
+    if request.method == 'POST':
+        page.title = request.POST.get('title')
+        page.content = request.POST.get('content')
+        page.slug = slugify(page.title) # Title badalne par URL slug bhi update ho jaye
+        page.save()
+        return redirect('dashboard')
+        
+    context = {
+        'page': page
+    }
+    return render(request, 'edit_page.html', context)
+
+@login_required(login_url='login')
+def delete_page_view(request, page_id):
+    # Sirf apna hi page delete kar sake
+    page = get_object_or_404(SitePage, id=page_id, exporter=request.user)
+    page.delete()
+    return redirect('dashboard')

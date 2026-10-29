@@ -3,73 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if product %}Edit{% else %}Add{% endif %} Product - Exportly</title>
+    <title>Add Product - Exportly</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style> body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; } </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } </style>
 </head>
-<body class="bg-[#f5f5f7] flex items-center justify-center min-h-screen py-10">
+<body class="bg-[#f9fafb] text-gray-900 h-screen flex overflow-hidden">
 
-    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 w-full max-w-lg">
-        
-        <a href="{% url 'dashboard' %}" class="text-sm text-blue-600 hover:underline mb-4 inline-block">&larr; Back to Dashboard</a>
-
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">
-                {% if product %}Edit Product{% else %}Add New Product{% endif %}
-            </h1>
-            <p class="text-gray-500 mt-1 text-sm">
-                {% if product %}Update your product details below.{% else %}This product will be displayed on your public website.{% endif %}
-            </p>
+    <!-- 1. LEFT SIDEBAR (Same as Dashboard) -->
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <a href="{% url 'dashboard' %}" class="text-2xl font-bold tracking-tight text-blue-600">Exportly</a>
         </div>
 
-        <!-- enctype zaroori hai images ke liye -->
-        <form method="POST" action="" enctype="multipart/form-data">
-            {% csrf_token %}
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                Overview
+            </a>
+            <!-- Active State for Products -->
+            <a href="{% url 'add_product' %}" class="flex items-center gap-3 bg-blue-50 text-blue-700 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                Products
+            </a>
+            <a href="{% url 'inquiry_list' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Inquiries
+            </a>
+            <a href="{% url 'add_page' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Custom Pages
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-100 space-y-1">
+            <a href="{% url 'public_site' request.user.username %}" target="_blank" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                View Live Site
+            </a>
+            <a href="{% url 'logout' %}" class="flex items-center gap-3 text-red-600 hover:bg-red-50 px-3 py-2.5 rounded-lg font-medium transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- 2. RIGHT MAIN CONTENT -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <!-- Top Header -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+            <h2 class="text-lg font-semibold text-gray-800">{% if product %}Edit Product{% else %}Add New Product{% endif %}</h2>
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-medium text-gray-500">Hello, <strong class="text-gray-900">{{ request.user.company_name|default:request.user.username }}</strong></span>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-8 flex justify-center">
             
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                <!-- Agar product edit ho raha hai, toh purana naam dikhao (value me) -->
-                <input type="text" name="name" value="{{ product.name|default:'' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="e.g. Premium Turmeric Powder">
-            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 w-full max-w-2xl h-fit">
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">{% if product %}Update Product{% else %}Product Details{% endif %}</h1>
+                        <p class="text-gray-500 mt-1 text-sm">Fill in the information below.</p>
+                    </div>
+                    <a href="{% url 'dashboard' %}" class="text-sm text-gray-500 hover:text-gray-900 font-medium">&larr; Back</a>
+                </div>
 
-            <div class="mb-4">
-                <div class="flex justify-between items-center mb-1">
-                    <label class="block text-sm font-medium text-gray-700">Description (Optional)</label>
-                    <button type="button" id="generate-ai-btn" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition">
-                        ✨ Generate with AI
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                        <input type="text" name="name" value="{{ product.name|default:'' }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="e.g. Premium Turmeric Powder">
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                            <button type="button" id="generate-ai-btn" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition">
+                                ✨ Generate with AI
+                            </button>
+                        </div>
+                        <textarea name="description" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Tell buyers about the quality, packaging, etc.">{{ product.description|default:'' }}</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Price (USD)</label>
+                            <input type="number" step="0.01" name="price" value="{{ product.price|default:'' }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="2.50">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">MOQ</label>
+                            <input type="text" name="moq" value="{{ product.moq|default:'' }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="100 kg">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                        {% if product.image %}
+                            <p class="text-xs text-green-600 mb-2 font-medium">Current Image: {{ product.image.name }}</p>
+                        {% endif %}
+                        <input type="file" name="image" accept="image/*" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl bg-gray-50 cursor-pointer">
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-sm">
+                        {% if product %}Update Product{% else %}Save Product{% endif %}
                     </button>
-                </div>
-                <!-- Purani description yahan dikhegi -->
-                <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Tell buyers about the quality, packaging, etc.">{{ product.description|default:'' }}</textarea>
+                </form>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Price (USD)</label>
-                    <input type="number" step="0.01" name="price" value="{{ product.price|default:'' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="2.50">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">MOQ</label>
-                    <input type="text" name="moq" value="{{ product.moq|default:'' }}" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="100 kg">
-                </div>
-            </div>
-
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
-                {% if product.image %}
-                    <p class="text-xs text-green-600 mb-2">Current Image: {{ product.image.name }}</p>
-                {% endif %}
-                <input type="file" name="image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
-            </div>
-
-            <button type="submit" class="w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-800 transition shadow-sm">
-                {% if product %}Update Product{% else %}Save Product{% endif %}
-            </button>
-        </form>
-
+        </main>
     </div>
 
-    <!-- AI JavaScript (Wahi purana code) -->
+    <!-- AI JavaScript -->
     <script>
         document.getElementById('generate-ai-btn').addEventListener('click', function() {
             const productName = document.querySelector('input[name="name"]').value;
@@ -77,7 +125,7 @@
             const btn = this;
 
             if (!productName) {
-                alert('Please enter a Product Name first to generate a description.');
+                alert('Please enter a Product Name first.');
                 return;
             }
 
