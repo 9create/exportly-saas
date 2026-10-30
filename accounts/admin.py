@@ -9,7 +9,7 @@ class CustomUserAdmin(UserAdmin):
     # Jab kisi user ko edit karne jayenge, toh ye naye fields dikhenge
     # Yahan humne 'Subscription Info' wala naya section add kiya hai
     fieldsets = UserAdmin.fieldsets + (
-        ('Exporter Details', {'fields': ('company_name', 'iec_code', 'phone', 'is_exporter')}),
+        ('Exporter Details', {'fields': ('company_name', 'iec_code', 'phone','whatsapp_number', 'is_exporter')}),
         ('Subscription Info', {'fields': ('current_plan', 'trial_ends_at')}), 
     )
 

@@ -9,6 +9,7 @@ class User(AbstractUser):
     iec_code = models.CharField(max_length=10, blank=True, null=True)
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
     template_choice = models.CharField(max_length=50, default='classic')
+    whatsapp_number = models.CharField(max_length=15, blank=True, null=True)
     current_plan = models.CharField(max_length=20, default='free') 
     trial_ends_at = models.DateTimeField(blank=True, null=True)
 

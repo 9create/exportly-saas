@@ -70,6 +70,9 @@ def update_profile_view(request):
         user.company_name = request.POST.get('company_name')
         user.phone = request.POST.get('phone')
         
+        # Ye nayi line add karo
+        user.whatsapp_number = request.POST.get('whatsapp_number')
+        
         if 'cover_image' in request.FILES:
             user.cover_image = request.FILES['cover_image']
             
