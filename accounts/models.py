@@ -10,6 +10,10 @@ class User(AbstractUser):
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
     template_choice = models.CharField(max_length=50, default='classic')
     whatsapp_number = models.CharField(max_length=15, blank=True, null=True)
+    youtube_link = models.URLField(blank=True, null=True)
+    linkedin_link = models.URLField(blank=True, null=True)
+    instagram_link = models.URLField(blank=True, null=True)
+    facebook_link = models.URLField(blank=True, null=True)
     current_plan = models.CharField(max_length=20, default='free') 
     trial_ends_at = models.DateTimeField(blank=True, null=True)
 
@@ -21,8 +25,10 @@ class User(AbstractUser):
 
     @property
     def effective_plan(self):
-        if self.current_plan == 'pro' and not self.is_trial_active:
-            return 'free' # Agar trial khatam, toh free plan par shift
+        # Agar user Pro hai, par uska trial date set hai aur wo expire ho chuka hai
+        if self.current_plan == 'pro' and self.trial_ends_at and not self.is_trial_active:
+            return 'free' 
+        # Warna jo current plan hai wahi dikhao (Paid Pro ya Enterprise)
         return self.current_plan
 
     def __str__(self):
@@ -67,3 +73,11 @@ class PricingPlan(models.Model):
         if self.features:
             return [f.strip() for f in self.features.split(',')]
         return []
+
+class PromoCode(models.Model):
+    code = models.CharField(max_length=50, unique=True, help_text="Enter code like EXPORTLY100")
+    is_active = models.BooleanField(default=True)
+    valid_until = models.DateTimeField(blank=True, null=True, help_text="Leave blank for never expire")
+
+    def __str__(self):
+        return self.code    

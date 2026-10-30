@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, SitePage, PricingPlan
+from .models import User, SitePage, PricingPlan, PromoCode
 
 class CustomUserAdmin(UserAdmin):
     # Admin panel ki list me ye fields dikhenge
@@ -15,3 +15,4 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(PricingPlan)
+admin.site.register(PromoCode)

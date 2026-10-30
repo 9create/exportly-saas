@@ -20,7 +20,7 @@ from accounts.views import home_view
 from users.views import signup_view,login_view, dashboard_view, logout_view
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import update_profile_view, public_site_view, add_page_view, custom_page_view, change_theme_view, catalog_view, edit_page_view, delete_page_view
+from users.views import update_profile_view, public_site_view, add_page_view, custom_page_view, change_theme_view, catalog_view, edit_page_view, delete_page_view,upgrade_plan_view, privacy_policy_view, terms_conditions_view, disclaimer_view, sitemap_view, robots_txt_view, apply_promo_code_view
 from inquiries.views import submit_inquiry_view, inquiry_list_view
 from products.views import add_product_view, generate_description_view, delete_product_view, edit_product_view, generate_quotation_pdf
 from django.conf.urls.i18n import i18n_patterns
@@ -38,8 +38,15 @@ urlpatterns += i18n_patterns(
     path('logout/', logout_view, name='logout'), 
     path('dashboard/add-product/', add_product_view, name='add_product'),
     path('dashboard/profile/', update_profile_view, name='update_profile'),
+    path('dashboard/upgrade/', upgrade_plan_view, name='upgrade_plan'),
+    path('dashboard/apply-promo/', apply_promo_code_view, name='apply_promo'),
     path('site/<str:username>/', public_site_view, name='public_site'),
-    path('site/<str:username>/catalog/', catalog_view, name='catalog'),    
+    path('site/<str:username>/catalog/', catalog_view, name='catalog'),
+    path('site/<str:username>/privacy/', privacy_policy_view, name='privacy_policy'),
+    path('site/<str:username>/sitemap.xml', sitemap_view, name='sitemap'),
+    path('site/<str:username>/robots.txt', robots_txt_view, name='robots_txt'),
+    path('site/<str:username>/terms/', terms_conditions_view, name='terms_conditions'),
+    path('site/<str:username>/disclaimer/', disclaimer_view, name='disclaimer'),    
     path('dashboard/add-page/', add_page_view, name='add_page'),
     path('dashboard/edit-page/<int:page_id>/', edit_page_view, name='edit_page'),
     path('dashboard/delete-page/<int:page_id>/', delete_page_view, name='delete_page'),    
