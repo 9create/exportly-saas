@@ -1,0 +1,306 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>{{ exporter.company_name|default:exporter.username }} - Global Exporter</title>
+    <meta name="description" content="{% if exporter.company_name %}{{ exporter.company_name }}{% else %}Global Exporter{% endif %} is a leading exporter from {{ exporter.city|default:'India' }}. Explore our high-quality products.">
+    
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" type="image/x-icon" />
+    
+    <!-- Tailwind CSS CDN with Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          container: {
+            center: true,
+            padding: '1rem',
+          },
+          extend: {
+            colors: {
+              primary: '#3758F9',
+              'blue-dark': '#1E40AF',
+              secondary: '#13C296',
+              dark: '#111928',
+              'dark-2': '#1F2A37',
+              'dark-6': '#9CA3AF',
+              body: '#637381',
+              'body-color': '#637381',
+              'gray-1': '#F9FAFB',
+            }
+          }
+        }
+      }
+    </script>
+       <!-- Dynamic Brand Color CSS (Ye add karna tha) -->
+    <style>
+        :root {
+            --brand-primary: {{ exporter.brand_color|default:'#3758F9' }}; 
+        }
+        .bg-brand-primary { background-color: var(--brand-primary) !important; }
+        .text-brand-primary { color: var(--brand-primary) !important; }
+        .border-brand-primary { border-color: var(--brand-primary) !important; }
+        .hover-bg-brand-primary:hover { background-color: var(--brand-primary) !important; filter: brightness(0.9); }
+        .hover-text-brand-primary:hover { color: var(--brand-primary) !important; }
+    </style> 
+    
+    <!-- Other CSS Libraries -->
+    <link rel="stylesheet" href="{% static 'assets/css/swiper-bundle.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}" />
+
+    <!-- WOW JS -->
+    <script src="{% static 'assets/js/wow.min.js' %}"></script>
+    <script>new WOW().init();</script>
+</head>
+
+<body class="flex flex-col min-h-screen overflow-x-hidden bg-white text-gray-900 font-sans">
+
+    <!-- ====== Navbar Section Start ====== -->
+    <header class="sticky top-0 left-0 z-50 w-full bg-[#090E34] shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+          
+          <!-- Logo / Company Name -->
+          <div class="flex-shrink-0">
+            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold text-white hover-text-brand-primary transition">
+              {{ exporter.company_name|default:exporter.username }}
+            </a>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <nav class="hidden lg:flex items-center space-x-8">
+            <!-- Home Link -->
+            <a href="{% url 'public_site' exporter.username %}" class="text-base {% if request.resolver_match.url_name == 'public_site' %}font-bold text-brand-primary{% else %}font-medium text-white hover-text-brand-primary{% endif %} transition">
+                {% trans "Home" %}
+            </a>
+            
+            <!-- Catalog Link -->
+            <a href="{% url 'catalog' exporter.username %}" class="text-base {% if request.resolver_match.url_name == 'catalog' %}font-bold text-brand-primary{% else %}font-medium text-white hover-text-brand-primary{% endif %} transition">
+                {% trans "Catalog" %}
+            </a>
+
+            <!-- Dynamic Custom Pages -->
+            {% for page in pages %}
+            <a href="{% url 'custom_page' exporter.username page.slug %}" class="text-base {% if request.resolver_match.url_name == 'custom_page' and request.resolver_match.kwargs.slug == page.slug %}font-bold text-brand-primary{% else %}font-medium text-white hover-text-brand-primary{% endif %} transition">
+                {{ page.title }}
+            </a>
+            {% endfor %}
+          </nav>
+
+          <!-- Right Side Actions -->
+          <div class="hidden lg:flex items-center gap-4">
+            <!-- Language Selector -->
+            <select id="language-selector" onchange="switchLanguage(this.value)" class="bg-transparent text-white border border-white/30 rounded px-2 py-1 text-sm outline-none">
+                <option value="en" class="text-black" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>EN</option>
+                <option value="hi" class="text-black" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>HI</option>
+                <option value="fr" class="text-black" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>FR</option>
+                <option value="es" class="text-black" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>ES</option>
+                <option value="de" class="text-black" {% if LANGUAGE_CODE == 'de' %}selected{% endif %}>DE</option>
+                <option value="mr" class="text-black" {% if LANGUAGE_CODE == 'mr' %}selected{% endif %}>MR</option>
+            </select>
+
+            <!-- Currency Selector -->
+            <select id="currency-selector" class="bg-transparent text-white border border-white/30 rounded px-2 py-1 text-sm outline-none">
+                <option value="USD" class="text-black">USD ($)</option>
+                <option value="EUR" class="text-black">EUR (€)</option>
+                <option value="GBP" class="text-black">GBP (£)</option>
+                <option value="AED" class="text-black">AED (د.إ)</option>
+                <option value="INR" class="text-black">INR (₹)</option>
+            </select>
+
+            <a href="#contact-form" class="px-5 py-2 text-sm font-medium text-[#090E34] bg-white hover:bg-gray-100 rounded-md transition shadow-sm">{% trans "Send Inquiry" %}</a>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="flex lg:hidden">
+            <button type="button" id="mobile-menu-btn" class="text-white hover:text-gray-300 focus:outline-none">
+              <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu (Hidden by default) -->
+      <div id="mobile-menu" class="hidden lg:hidden bg-[#090E34] border-t border-white/10">
+        <div class="px-4 pt-2 pb-6 space-y-2">
+          <!-- Home Link -->
+          <a href="{% url 'public_site' exporter.username %}" class="block px-3 py-2 text-base {% if request.resolver_match.url_name == 'public_site' %}font-bold text-brand-primary{% else %}font-medium text-white hover-text-brand-primary{% endif %} rounded-md">
+              {% trans "Home" %}
+          </a>
+          
+          <!-- Catalog Link -->
+          <a href="{% url 'catalog' exporter.username %}" class="block px-3 py-2 text-base {% if request.resolver_match.url_name == 'catalog' %}font-bold text-brand-primary{% else %}font-medium text-white hover-text-brand-primary{% endif %} rounded-md">
+              {% trans "Catalog" %}
+          </a>
+
+          <!-- Dynamic Custom Pages -->
+          {% for page in pages %}
+          <a href="{% url 'custom_page' exporter.username page.slug %}" class="block px-3 py-2 text-base {% if request.resolver_match.url_name == 'custom_page' and request.resolver_match.kwargs.slug == page.slug %}font-bold text-brand-primary{% else %}font-medium text-white hover-text-brand-primary{% endif %} rounded-md">
+              {{ page.title }}
+          </a>
+          {% endfor %}
+          
+          <a href="#contact-form" class="block mt-4 px-3 py-2 text-center text-base font-medium text-[#090E34] bg-white rounded-md">{% trans "Send Inquiry" %}</a>
+        </div>
+      </div>
+    </header>
+    <!-- ====== Navbar Section End ====== -->
+
+    <!-- ====== Main Content Area ====== -->
+    <main class="flex-grow w-full relative">
+        {% block content %}
+        <!-- Har page ka content yahan aayega -->
+        {% endblock %}
+    </main>
+
+    <!-- ====== Footer Section Start ====== -->
+    <footer class="bg-[#090E34] pt-16 pb-8 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          
+          <!-- Column 1: Company Info & Social -->
+          <div>
+            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold text-white mb-4 block">
+              {{ exporter.company_name|default:exporter.username }}
+            </a>
+            <p class="text-base text-gray-400 mb-6 leading-relaxed">
+              Leading exporter from {{ exporter.city|default:"India" }}. Delivering quality products globally.
+            </p>
+            <!-- Dynamic Social Links -->
+            <div class="flex items-center gap-4">
+              {% if exporter.youtube_link %}
+              <a href="{{ exporter.youtube_link }}" target="_blank" class="text-gray-400 hover:text-white transition">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              </a>
+              {% endif %}
+              {% if exporter.effective_plan != 'free' %}
+                {% if exporter.linkedin_link %}
+                <a href="{{ exporter.linkedin_link }}" target="_blank" class="text-gray-400 hover:text-white transition">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+                {% endif %}
+                {% if exporter.instagram_link %}
+                <a href="{{ exporter.instagram_link }}" target="_blank" class="text-gray-400 hover:text-white transition">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Column 2: Quick Links -->
+          <div>
+            <h4 class="text-lg font-semibold text-white mb-6">{% trans "Quick Links" %}</h4>
+            <ul class="space-y-3">
+              <li><a href="{% url 'public_site' exporter.username %}" class="text-gray-400 hover:text-white transition">{% trans "Home" %}</a></li>
+              <li><a href="{% url 'catalog' exporter.username %}" class="text-gray-400 hover:text-white transition">{% trans "Products" %}</a></li>
+              <li><a href="#contact-form" class="text-gray-400 hover:text-white transition">{% trans "Contact Us" %}</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 3: Legal Links -->
+          <div>
+            <h4 class="text-lg font-semibold text-white mb-6">{% trans "Legal" %}</h4>
+            <ul class="space-y-3">
+              <li><a href="{% url 'privacy_policy' exporter.username %}" class="text-gray-400 hover:text-white transition">{% trans "Privacy Policy" %}</a></li>
+              <li><a href="{% url 'terms_conditions' exporter.username %}" class="text-gray-400 hover:text-white transition">{% trans "Terms & Conditions" %}</a></li>
+              <li><a href="{% url 'disclaimer' exporter.username %}" class="text-gray-400 hover:text-white transition">{% trans "Disclaimer" %}</a></li>
+            </ul>
+          </div>
+
+          <!-- Column 4: Contact Info -->
+          <div>
+            <h4 class="text-lg font-semibold text-white mb-6">{% trans "Contact" %}</h4>
+            <ul class="space-y-3 text-gray-400">
+               <li class="flex items-center gap-2">📍 {{ exporter.city|default:"India" }}</li>
+               {% if exporter.phone %}<li class="flex items-center gap-2">📞 {{ exporter.phone }}</li>{% endif %}
+               {% if exporter.email %}<li class="flex items-center gap-2">✉️ {{ exporter.email }}</li>{% endif %}
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-white/10 pt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+          <p>&copy; 2026 {{ exporter.company_name|default:exporter.username }}. All rights reserved.</p>
+          <p class="mt-4 md:mt-0">Powered by <a href="{% url 'home' %}" class="text-white hover:underline">Exportly</a></p>
+        </div>
+      </div>
+    </footer>
+    <!-- ====== Footer Section End ====== -->
+
+    <!-- WhatsApp Floating Button -->
+    {% if exporter.whatsapp_number %}
+    <a href="https://wa.me/{{ exporter.whatsapp_number }}?text=Hello%20{{ exporter.company_name|default:exporter.username }},%20I%20am%20interested%20in%20your%20products." target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-lg hover:bg-[#128C7E] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center group" title="Chat on WhatsApp">
+        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+    {% endif %}
+
+    <!-- JS Scripts -->
+    <script src="{% static 'assets/js/swiper-bundle.min.js' %}"></script>
+    
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- Language & Currency Switching Logic -->
+    <script>
+        function switchLanguage(lang) {
+            let path = window.location.pathname;
+            const allLanguages = ['hi', 'fr', 'es', 'de', 'mr'];
+            let currentLangPrefix = '';
+            for (let l of allLanguages) {
+                if (path.startsWith('/' + l + '/')) {
+                    currentLangPrefix = '/' + l;
+                    break;
+                }
+            }
+            if (currentLangPrefix) { path = path.replace(currentLangPrefix, ''); }
+            if (lang === 'en') { window.location.href = path; } 
+            else { window.location.href = '/' + lang + path; }
+        }
+
+        const currencySelector = document.getElementById('currency-selector');
+        if (currencySelector) {
+            currencySelector.addEventListener('change', function() {
+                const selectedCurrency = this.value;
+                const priceElements = document.querySelectorAll('.product-price');
+                if (selectedCurrency === 'USD') {
+                    priceElements.forEach(el => {
+                        const usdPrice = parseFloat(el.getAttribute('data-usd'));
+                        el.innerHTML = `$${usdPrice.toFixed(2)}`;
+                    });
+                    return;
+                }
+                fetch('https://open.er-api.com/v6/latest/USD')
+                    .then(response => response.json())
+                    .then(data => {
+                        const rate = data.rates[selectedCurrency];
+                        let symbol = '';
+                        if (selectedCurrency === 'EUR') symbol = '€';
+                        else if (selectedCurrency === 'GBP') symbol = '£';
+                        else if (selectedCurrency === 'AED') symbol = 'AED ';
+                        else if (selectedCurrency === 'INR') symbol = '₹';
+                        priceElements.forEach(el => {
+                            const usdPrice = parseFloat(el.getAttribute('data-usd'));
+                            const convertedPrice = (usdPrice * rate).toFixed(2);
+                            el.innerHTML = `${symbol}${convertedPrice}`;
+                        });
+                    }).catch(error => console.error('Error fetching exchange rates:', error));
+            });
+        }
+    </script>
+</body>
+</html>

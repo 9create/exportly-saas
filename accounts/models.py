@@ -16,6 +16,7 @@ class User(AbstractUser):
     facebook_link = models.URLField(blank=True, null=True)
     current_plan = models.CharField(max_length=20, default='free') 
     trial_ends_at = models.DateTimeField(blank=True, null=True)
+    brand_color = models.CharField(max_length=7, default="#3758F9")
 
     @property
     def is_trial_active(self):
@@ -80,4 +81,22 @@ class PromoCode(models.Model):
     valid_until = models.DateTimeField(blank=True, null=True, help_text="Leave blank for never expire")
 
     def __str__(self):
-        return self.code    
+        return self.code  
+
+    
+class PlatformSettings(models.Model):
+    primary_color = models.CharField(max_length=7, default="#2563EB", help_text="Hex code e.g. #2563EB")
+    secondary_color = models.CharField(max_length=7, default="#10B981", help_text="Hex code e.g. #10B981")
+
+    def save(self, *args, **kwargs):
+        # Sirf ek hi settings record banega (Singleton)
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Platform Settings"      

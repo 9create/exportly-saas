@@ -1,54 +1,91 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-29 10:02+0530\n"
+"POT-Creation-Date: 2026-10-31 13:57+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\config\settings.py:98
 msgid "English"
 msgstr "Inglés"
 
-#: .\config\settings.py:99
 msgid "Hindi"
 msgstr "Hindi"
 
-#: .\config\settings.py:100
 msgid "French"
 msgstr "Francés"
 
-#: .\config\settings.py:101
 msgid "Spanish"
 msgstr "Español"
 
-#: .\config\settings.py:102
 msgid "German"
 msgstr "Alemán"
 
-#: .\config\settings.py:103
 msgid "Marathi"
 msgstr "Marathi"
 
-#: .\templates\public_site.html:29
 msgid "Home"
 msgstr "Inicio"
 
-#: .\templates\public_site.html:83
+msgid "Catalog"
+msgstr "Catálogo"
+
 msgid "Send Inquiry"
 msgstr "Enviar consulta"
 
-#: .\templates\public_site.html:103 .\templates\public_site.html:145
 msgid "Our Products"
 msgstr "Nuestros Productos"
+
+msgid "Quick Links"
+msgstr "Enlaces Rápidos"
+
+msgid "Products"
+msgstr "Productos"
+
+msgid "Contact Us"
+msgstr "Contáctanos"
+
+msgid "Legal"
+msgstr "Legal"
+
+msgid "Privacy Policy"
+msgstr "Política de Privacidad"
+
+msgid "Terms & Conditions"
+msgstr "Términos y Condiciones"
+
+msgid "Disclaimer"
+msgstr "Descargo de responsabilidad"
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "View Products"
+msgstr "Ver Productos"
+
+msgid "Our Catalog"
+msgstr "Nuestro Catálogo"
+
+msgid "Premium Export Products"
+msgstr "Productos de Exportación Premium"
+
+msgid "Your Name"
+msgstr "Tu Nombre"
+
+msgid "Your Email"
+msgstr "Tu Correo Electrónico"
+
+msgid "Your Country"
+msgstr "Tu País"
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "Send Message"
+msgstr "Enviar Mensaje"

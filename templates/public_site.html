@@ -22,6 +22,16 @@
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
         } 
+        /* Dynamic Brand Color CSS */
+        :root {
+            --brand-primary: {{ exporter.brand_color|default:'#3758F9' }}; 
+        }
+        .bg-brand-primary { background-color: var(--brand-primary) !important; }
+        .text-brand-primary { color: var(--brand-primary) !important; }
+        .border-brand-primary { border-color: var(--brand-primary) !important; }
+        .hover-bg-brand-primary:hover { background-color: var(--brand-primary) !important; filter: brightness(0.9); }
+        .hover-text-brand-primary:hover { color: var(--brand-primary) !important; }
+        .group:hover .group-hover-text-brand-primary { color: var(--brand-primary) !important; }
     </style>
 </head>
 <body class="{% if exporter.template_choice == 'minimal' %}bg-white text-black{% elif exporter.template_choice == 'modern' %}bg-gray-900 text-white{% else %}bg-[#f5f5f7] text-gray-900{% endif %}">
@@ -29,25 +39,30 @@
     <!-- 1. Premium Navigation Menu (Apple Glass Effect) -->
     <nav class="{% if exporter.template_choice == 'minimal' %}bg-white border-gray-200 shadow-sm{% elif exporter.template_choice == 'modern' %}bg-gray-900/70 border-gray-800{% else %}bg-white/70 border-gray-200/50{% endif %} {% if exporter.template_choice != 'minimal' %}backdrop-blur-xl{% endif %} border-b sticky top-0 z-50 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white hover:text-blue-400{% else %}text-gray-900 hover:text-blue-600{% endif %} transition-colors">
+            <a href="{% url 'public_site' exporter.username %}" class="text-2xl font-bold tracking-tight {% if exporter.template_choice == 'modern' %}text-white hover-text-brand-primary{% else %}text-gray-900 hover-text-brand-primary{% endif %} transition-colors">
                 {{ exporter.company_name|default:exporter.username }}
             </a>
             
             <div class="flex items-center space-x-6">
-                <a href="{% url 'public_site' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">{% trans "Home" %}</a>
+                <!-- Home Link -->
+                <a href="{% url 'public_site' exporter.username %}" class="text-sm {% if request.resolver_match.url_name == 'public_site' %}font-bold text-brand-primary{% else %}font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %}{% endif %} transition-colors duration-300">
+                    {% trans "Home" %}
+                </a>
                 
-                <!-- NAYA LINK: Catalog ke liye -->
-                <a href="{% url 'catalog' exporter.username %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">Catalog</a>
+                <!-- Catalog Link -->
+                <a href="{% url 'catalog' exporter.username %}" class="text-sm {% if request.resolver_match.url_name == 'catalog' %}font-bold text-brand-primary{% else %}font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %}{% endif %} transition-colors duration-300">
+                    {% trans "Catalog" %}
+                </a>
 
                 <!-- Dynamic Custom Pages Loop -->
                 {% for page in pages %}
-                    <a href="{% url 'custom_page' exporter.username page.slug %}" class="text-sm font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %} transition-colors duration-300">
+                    <a href="{% url 'custom_page' exporter.username page.slug %}" class="text-sm {% if request.resolver_match.url_name == 'custom_page' and request.resolver_match.kwargs.slug == page.slug %}font-bold text-brand-primary{% else %}font-medium {% if exporter.template_choice == 'modern' %}text-gray-300 hover:text-white{% else %}text-gray-500 hover:text-black{% endif %}{% endif %} transition-colors duration-300">
                         {{ page.title }}
                     </a>
                 {% endfor %}
 
                 <!-- Language Selector -->
-                <select id="language-selector" onchange="switchLanguage(this.value)" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                <select id="language-selector" onchange="switchLanguage(this.value)" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block p-2 outline-none cursor-pointer ml-4">
                     <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
                     <option value="hi" {% if LANGUAGE_CODE == 'hi' %}selected{% endif %}>Hindi</option>
                     <option value="fr" {% if LANGUAGE_CODE == 'fr' %}selected{% endif %}>French</option>
@@ -57,7 +72,7 @@
                 </select>
 
                 <!-- Currency Selector -->
-                <select id="currency-selector" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none cursor-pointer ml-4">
+                <select id="currency-selector" class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700 text-white{% else %}bg-gray-100 border-gray-200 text-gray-700{% endif %} border text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block p-2 outline-none cursor-pointer ml-4">
                     <option value="USD">USD ($)</option>
                     <option value="EUR">EUR (€)</option>
                     <option value="GBP">GBP (£)</option>
@@ -95,7 +110,7 @@
                 </p>
             </div>
             <div class="shrink-0">
-                <a href="#inquiry-form" class="inline-block bg-blue-600 text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
+                <a href="#inquiry-form" class="inline-block bg-brand-primary text-white px-8 py-3.5 rounded-full text-sm font-semibold hover-bg-brand-primary hover:shadow-lg transition-all duration-300">
                     {% trans "Send Inquiry" %}
                 </a>
             </div>
@@ -107,7 +122,7 @@
         <div data-aos="fade-up" data-aos-delay="200" class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <!-- Badge 1 -->
             <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800/50 border-gray-700{% else %}bg-white border-gray-100{% endif %} border p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm hover:-translate-y-1 transition duration-300">
-                <svg class="w-8 h-8 text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <svg class="w-8 h-8 text-brand-primary mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span class="font-bold {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} text-sm">Global Shipping</span>
                 <span class="text-xs {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-1">To 20+ Countries</span>
             </div>
@@ -164,13 +179,13 @@
                         </div>
                         
                         <div class="p-6">
-                            <h3 class="font-bold text-xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} group-hover:text-blue-500 transition-colors">{{ product.name }}</h3>
+                            <h3 class="font-bold text-xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} group-hover-text-brand-primary transition-colors">{{ product.name }}</h3>
                             <p class="text-sm {% if exporter.template_choice == 'modern' %}text-gray-400{% else %}text-gray-500{% endif %} mt-2 line-clamp-2">{{ product.description|default:"High quality export product." }}</p>
                             <div class="mt-5 flex justify-between items-center border-t {% if exporter.template_choice == 'modern' %}border-gray-700{% else %}border-gray-100{% endif %} pt-4">
                                 <span class="font-bold text-2xl {% if exporter.template_choice == 'modern' %}text-white{% else %}text-gray-900{% endif %} product-price" data-usd="{{ product.price }}">
                                     ${{ product.price }}
                                 </span>
-                                <a href="#inquiry-form" class="text-sm font-semibold text-blue-500 hover:text-blue-600">Get Quote &rarr;</a>
+                                <a href="#inquiry-form" class="text-sm font-semibold text-brand-primary hover-text-brand-primary">Get Quote &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -197,25 +212,25 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Your Name</label>
-                        <input type="text" name="buyer_name" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm">
+                        <input type="text" name="buyer_name" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all shadow-sm">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Your Email</label>
-                        <input type="email" name="buyer_email" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm">
+                        <input type="email" name="buyer_email" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all shadow-sm">
                     </div>
                 </div>
 
                 <div class="mb-6">
                     <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Your Country</label>
-                    <input type="text" name="buyer_country" class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm" placeholder="e.g. USA, UAE">
+                    <input type="text" name="buyer_country" class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all shadow-sm" placeholder="e.g. USA, UAE">
                 </div>
 
                 <div class="mb-8">
                     <label class="block text-sm font-semibold {% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} mb-2">Message</label>
-                    <textarea name="message" rows="4" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm" placeholder="I am interested in buying your product..."></textarea>
+                    <textarea name="message" rows="4" required class="w-full px-5 py-3 {% if exporter.template_choice == 'modern' %}bg-gray-900 border-gray-600 text-white{% else %}bg-white border-gray-200 text-gray-900{% endif %} border rounded-xl focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none transition-all shadow-sm" placeholder="I am interested in buying your product..."></textarea>
                 </div>
 
-                <button type="submit" class="w-full {% if exporter.template_choice == 'modern' %}bg-blue-600 hover:bg-blue-700{% else %}bg-black hover:bg-gray-800{% endif %} text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300">
+                <button type="submit" class="w-full {% if exporter.template_choice == 'modern' %}bg-brand-primary hover-bg-brand-primary{% else %}bg-black hover:bg-gray-800{% endif %} text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all duration-300">
                     Send Message
                 </button>
             </form>
@@ -265,9 +280,9 @@
 
             <!-- Legal Links Section -->
             <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-medium">
-                <a href="{% url 'privacy_policy' exporter.username %}" class="hover:text-blue-500 transition-colors">Privacy Policy</a>
-                <a href="{% url 'terms_conditions' exporter.username %}" class="hover:text-blue-500 transition-colors">Terms & Conditions</a>
-                <a href="{% url 'disclaimer' exporter.username %}" class="hover:text-blue-500 transition-colors">Disclaimer</a>
+                <a href="{% url 'privacy_policy' exporter.username %}" class="hover-text-brand-primary transition-colors">Privacy Policy</a>
+                <a href="{% url 'terms_conditions' exporter.username %}" class="hover-text-brand-primary transition-colors">Terms & Conditions</a>
+                <a href="{% url 'disclaimer' exporter.username %}" class="hover-text-brand-primary transition-colors">Disclaimer</a>
             </div>
 
         </div>

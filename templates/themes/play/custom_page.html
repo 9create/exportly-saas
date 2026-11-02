@@ -1,0 +1,18 @@
+{% extends "themes/play/base.html" %}
+{% load static %}
+
+{% block content %}
+    <section class="py-20 bg-gray-50 min-h-[70vh]">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-gray-100">
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">{{ page.title }}</h1>
+          
+          <div class="prose max-w-none text-gray-600 leading-relaxed text-lg whitespace-pre-wrap">
+            {{ page.content }}
+          </div>
+        </div>
+        
+      </div>
+    </section>
+{% endblock %}

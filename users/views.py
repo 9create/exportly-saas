@@ -69,17 +69,22 @@ def update_profile_view(request):
         user = request.user
         user.company_name = request.POST.get('company_name')
         user.phone = request.POST.get('phone')
-        
-        # Ye nayi line add karo
         user.whatsapp_number = request.POST.get('whatsapp_number')
         user.youtube_link = request.POST.get('youtube_link')
         user.linkedin_link = request.POST.get('linkedin_link')
         user.instagram_link = request.POST.get('instagram_link')
         user.facebook_link = request.POST.get('facebook_link')
         
+        
         if 'cover_image' in request.FILES:
             user.cover_image = request.FILES['cover_image']
             
+        color_input = request.POST.get('brand_color')
+        if color_input:
+            if not color_input.startswith('#'):
+                user.brand_color = '#' + color_input
+            else:
+                user.brand_color = color_input
         user.save()
         return redirect('dashboard')
         
@@ -91,12 +96,18 @@ def public_site_view(request, username):
     products = Product.objects.filter(exporter=exporter)
     pages = SitePage.objects.filter(exporter=exporter)
 
+    # Theme Check Logic
+    if exporter.template_choice == 'play':
+        template_name = 'themes/play/index.html'
+    else:
+        template_name = 'public_site.html' # Purani themes (classic/modern/minimal)
+
     context = {
         'exporter': exporter,
         'products': products,
         'pages': pages
     }
-    return render(request, 'public_site.html', context)
+    return render(request, template_name, context)
 
 
 @login_required(login_url='login')
@@ -120,15 +131,20 @@ def add_page_view(request):
 def custom_page_view(request, username, slug):
     # Us user ka wo specific page dhoondo
     page = get_object_or_404(SitePage, exporter__username=username, slug=slug)
-
     pages = SitePage.objects.filter(exporter=page.exporter)
+    
+    # Theme Check Logic
+    if page.exporter.template_choice == 'play':
+        template_name = 'themes/play/custom_page.html'
+    else:
+        template_name = 'custom_page.html'
     
     context = {
         'page': page,
         'exporter': page.exporter,
         'pages': pages
     }
-    return render(request, 'custom_page.html', context)
+    return render(request, template_name, context)
 
 
 @login_required(login_url='login')
@@ -142,15 +158,20 @@ def change_theme_view(request, theme_name):
 def catalog_view(request, username):
     exporter = get_object_or_404(User, username=username)
     products = Product.objects.filter(exporter=exporter)
-
     pages = SitePage.objects.filter(exporter=exporter)
     
+    # Theme Check Logic
+    if exporter.template_choice == 'play':
+        template_name = 'themes/play/catalog.html'
+    else:
+        template_name = 'catalog.html'
+
     context = {
         'exporter': exporter,
         'products': products,
         'pages': pages
     }
-    return render(request, 'catalog.html', context)
+    return render(request, template_name, context)
 
 @login_required(login_url='login')
 def edit_page_view(request, page_id):
