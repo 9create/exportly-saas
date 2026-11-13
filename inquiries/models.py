@@ -14,6 +14,7 @@ class Inquiry(models.Model):
     buyer_email = models.EmailField()
     buyer_country = models.CharField(max_length=100, blank=True, null=True)
     message = models.TextField()
+    is_read = models.BooleanField(default=False) # Naya field: Padha gaya ya nahi
     
     created_at = models.DateTimeField(auto_now_add=True)
 

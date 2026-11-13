@@ -16,12 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from accounts.views import home_view
 from users.views import signup_view,login_view, dashboard_view, logout_view
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import update_profile_view, public_site_view, add_page_view, custom_page_view, change_theme_view, catalog_view, edit_page_view, delete_page_view,upgrade_plan_view, privacy_policy_view, terms_conditions_view, disclaimer_view, sitemap_view, robots_txt_view, apply_promo_code_view
-from inquiries.views import submit_inquiry_view, inquiry_list_view
+from users.views import update_profile_view, public_site_view, add_page_view, custom_page_view, change_theme_view, catalog_view, edit_page_view, delete_page_view,upgrade_plan_view, privacy_policy_view, terms_conditions_view, disclaimer_view, sitemap_view, robots_txt_view, apply_promo_code_view, generate_website_view
+from inquiries.views import submit_inquiry_view, inquiry_list_view, mark_inquiry_read_view
 from products.views import add_product_view, generate_description_view, delete_product_view, edit_product_view, generate_quotation_pdf
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
@@ -34,10 +35,15 @@ urlpatterns += i18n_patterns(
     path('', home_view, name='home'),
     path('signup/', signup_view, name='signup'),
     path('login/', login_view, name='login'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='password_reset.html'), name='password_reset'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),    
     path('dashboard/', dashboard_view, name='dashboard'),
     path('logout/', logout_view, name='logout'), 
     path('dashboard/add-product/', add_product_view, name='add_product'),
     path('dashboard/profile/', update_profile_view, name='update_profile'),
+    path('dashboard/generate-website/', generate_website_view, name='generate_website'),
     path('dashboard/upgrade/', upgrade_plan_view, name='upgrade_plan'),
     path('dashboard/apply-promo/', apply_promo_code_view, name='apply_promo'),
     path('site/<str:username>/', public_site_view, name='public_site'),
@@ -54,6 +60,7 @@ urlpatterns += i18n_patterns(
     path('site/<str:username>/inquiry/', submit_inquiry_view, name='submit_inquiry'),
     path('site/<str:username>/<str:slug>/', custom_page_view, name='custom_page'),
     path('dashboard/inquiries/', inquiry_list_view, name='inquiry_list'),
+    path('dashboard/inquiries/mark-read/<int:inquiry_id>/', mark_inquiry_read_view, name='mark_inquiry_read'),    
     path('api/generate-description/', generate_description_view, name='generate_description'),
     path('dashboard/delete-product/<int:product_id>/', delete_product_view, name='delete_product'),   
     path('dashboard/edit-product/<int:product_id>/', edit_product_view, name='edit_product'),

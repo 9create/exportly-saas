@@ -41,6 +41,7 @@ def add_product_view(request):
     return render(request, 'add_product.html')
 
 
+@login_required(login_url='login')
 def generate_description_view(request):
     if request.method == 'POST':
         try:

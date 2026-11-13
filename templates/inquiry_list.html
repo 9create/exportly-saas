@@ -9,7 +9,7 @@
     <style> 
     body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } 
     :root {
-        --primary-color: {{ site_settings.primary_color|default:'#2563EB' }};
+        --primary-color: {{ request.user.brand_color|default:'#2563EB' }};
     }
     .bg-primary { background-color: var(--primary-color) !important; }
     .text-primary { color: var(--primary-color) !important; }
@@ -41,9 +41,14 @@
                 Products
             </a>
             <!-- Active State for Inquiries -->
-            <a href="{% url 'inquiry_list' %}" class="flex items-center gap-3 bg-blue-50 text-blue-700 px-3 py-2.5 rounded-lg font-medium transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                Inquiries
+            <a href="{% url 'inquiry_list' %}" class="flex items-center justify-between bg-blue-50 text-blue-700 px-3 py-2.5 rounded-lg font-medium transition">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Inquiries
+                </div>
+                {% if global_unread_inquiries > 0 %}
+                    <span class="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ global_unread_inquiries }}</span>
+                {% endif %}
             </a>
             <a href="{% url 'add_page' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -91,17 +96,47 @@
             {% if inquiries %}
                 <div class="space-y-4">
                     {% for inquiry in inquiries %}
-                        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <!-- Dynamic Brand Color aur Unread Logic wala Card -->
+                        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm border {% if not inquiry.is_read %}border-primary ring-1 ring-primary{% else %}border-gray-100{% endif %} transition-all">
+                            
                             <div class="flex flex-col md:flex-row justify-between items-start mb-4 gap-2">
                                 <div>
-                                    <h3 class="text-lg font-bold text-gray-900">{{ inquiry.buyer_name }}</h3>
-                                    <p class="text-sm text-gray-500 break-all">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} <br class="md:hidden"> | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
+                                    <div class="flex items-center gap-2">
+                                        <!-- Unread Indicator (Aapka Brand Color) -->
+                                        {% if not inquiry.is_read %}
+                                            <span class="flex h-2.5 w-2.5 relative">
+                                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                                            </span>
+                                        {% endif %}
+                                        
+                                        <h3 class="text-lg font-bold text-gray-900">{{ inquiry.buyer_name }}</h3>
+                                        
+                                        <!-- New Tag (Aapka Brand Color) -->
+                                        {% if not inquiry.is_read %}
+                                            <span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">New</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <p class="text-sm text-gray-500 break-all mt-1">{{ inquiry.buyer_email }} {% if inquiry.buyer_country %} <br class="md:hidden"> | 📍 {{ inquiry.buyer_country }}{% endif %}</p>
                                 </div>
                                 <span class="text-xs font-medium text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">{{ inquiry.created_at|date:"d M Y, H:i" }}</span>
                             </div>
+
                             <div class="bg-gray-50 p-4 rounded-xl text-gray-700 border border-gray-100 text-sm md:text-base">
                                 {{ inquiry.message }}
                             </div>
+
+                            <!-- Mark as Read Button -->
+                            {% if not inquiry.is_read %}
+                                <div class="mt-4 flex justify-end">
+                                    <a href="{% url 'mark_inquiry_read' inquiry.id %}" class="text-xs font-bold text-primary hover:opacity-80 bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 transition flex items-center gap-1 shadow-sm">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        Mark as Read
+                                    </a>
+                                </div>
+                            {% endif %}
+
                         </div>
                     {% endfor %}
                 </div>

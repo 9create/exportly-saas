@@ -9,7 +9,7 @@
     <style> 
     body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } 
     :root {
-        --primary-color: {{ site_settings.primary_color|default:'#2563EB' }};
+        --primary-color: {{ request.user.brand_color|default:'#2563EB' }};
     }
     .bg-primary { background-color: var(--primary-color) !important; }
     .text-primary { color: var(--primary-color) !important; }

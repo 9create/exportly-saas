@@ -38,3 +38,16 @@ def inquiry_list_view(request):
         'inquiries': my_inquiries
     }
     return render(request, 'inquiry_list.html', context)
+
+
+@login_required(login_url='login')
+def mark_inquiry_read_view(request, inquiry_id):
+    # Wo inquiry dhoondo jo is user ki ho
+    inquiry = get_object_or_404(Inquiry, id=inquiry_id, exporter=request.user)
+    
+    # Uska status True (padha hua) kar do
+    inquiry.is_read = True
+    inquiry.save()
+    
+    # Wapas inquiries list par bhej do
+    return redirect('inquiry_list')

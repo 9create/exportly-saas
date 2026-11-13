@@ -11,7 +11,7 @@
         
         /* Dynamic Brand Colors */
         :root {
-            --primary-color: {{ site_settings.primary_color|default:'#2563EB' }};
+            --primary-color: {{ request.user.brand_color|default:'#2563EB' }};
             --secondary-color: {{ site_settings.secondary_color|default:'#10B981' }};
         }
 
@@ -45,9 +45,15 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 Products
             </a>
-            <a href="{% url 'inquiry_list' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                Inquiries
+            <a href="{% url 'inquiry_list' %}" class="flex items-center justify-between text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Inquiries
+                </div>
+                <!-- Unread Notification Badge -->
+                {% if global_unread_inquiries > 0 %}
+                    <span class="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ global_unread_inquiries }}</span>
+                {% endif %}
             </a>
             <a href="{% url 'add_page' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -119,6 +125,23 @@
                     </div>
                 {% endfor %}
             {% endif %}
+
+            <!-- 1-Click Website Builder Banner -->
+            <div class="mb-8 bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-lg relative overflow-hidden">
+                <!-- Background Design -->
+                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-10 rounded-full blur-2xl"></div>
+                
+                <div class="relative z-10 mb-4 md:mb-0 text-center md:text-left">
+                    <h2 class="text-2xl font-bold text-white mb-2">Build your website in 1-Click</h2>
+                    <p class="text-gray-300 text-sm md:text-base max-w-lg">Answer a few simple questions and let our system generate a professional export website for you instantly.</p>
+                </div>
+                <div class="relative z-10">
+                    <!-- Abhi yeh button kaam nahi karega, hum isko agle step mein connect karenge -->
+                    <button onclick="openWizardModal()" class="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 rounded-xl font-bold transition shadow-md flex items-center gap-2 transform hover:scale-105">
+                        ✨ Start 1-Click Setup
+                    </button>
+                </div>
+            </div>
 
             <!-- Welcome Section -->
             <div class="mb-8">
@@ -345,7 +368,42 @@
         </main>
     </div>
 
-    
+        <!-- 1-Click Setup Wizard Modal (Hidden by default) -->
+    <div id="wizardModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-300" id="wizardModalContent">
+            
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Setup Wizard</h3>
+                <button onclick="closeWizardModal()" class="text-gray-400 hover:text-gray-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <p class="text-sm text-gray-500 mb-6">Let's build your export website. Just answer a few simple questions.</p>
+
+            <!-- Form -->
+            <form action="{% url 'generate_website' %}" method="POST" target="_blank">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Website / Company Name</label>
+                    <input type="text" name="company_name" value="{{ request.user.company_name|default:'' }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary outline-none transition" placeholder="e.g. ABC Exports">
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select a Theme</label>
+                    <select name="theme" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary outline-none transition">
+                        <option value="play">Play (Modern SaaS)</option>
+                        <option value="classic">Classic</option>
+                        <option value="modern">Modern (Dark)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:opacity-90 transition shadow-sm">
+                    🚀 Generate My Website
+                </button>
+            </form>
+        </div>
+    </div>
     <!-- Sidebar Toggle JavaScript -->
     <script>
         function toggleSidebar() {
@@ -355,6 +413,28 @@
             sidebar.classList.toggle('-translate-x-full');
             overlay.classList.toggle('hidden');
         }
+            // Wizard Modal Logic
+        function openWizardModal() {
+            const modal = document.getElementById('wizardModal');
+            const content = document.getElementById('wizardModalContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeWizardModal() {
+            const modal = document.getElementById('wizardModal');
+            const content = document.getElementById('wizardModalContent');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }    
     </script>
 
     <!-- Custom Delete Modal (Hidden by default) -->

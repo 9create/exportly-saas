@@ -275,3 +275,26 @@ def apply_promo_code_view(request):
             messages.error(request, 'Invalid or inactive promo code.')
             
     return redirect('upgrade_plan')
+
+
+@login_required(login_url='login')
+def generate_website_view(request):
+    if request.method == 'POST':
+        company_name = request.POST.get('company_name')
+        theme = request.POST.get('theme')
+
+        # User ka data update karo
+        user = request.user
+        if company_name:
+            user.company_name = company_name
+        if theme:
+            user.template_choice = theme
+        user.save()
+
+        # Success message dikhao
+        messages.success(request, "🎉 Boom! Your website is ready.")
+        
+        # User ko seedha uski live website par bhej do taaki woh result dekh sake
+        return redirect('public_site', username=user.username)
+        
+    return redirect('dashboard')
