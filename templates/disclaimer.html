@@ -22,13 +22,21 @@
         <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} p-10 md:p-14 rounded-3xl shadow-sm border">
             <h1 class="text-3xl md:text-4xl font-bold mb-8">Disclaimer</h1>
             <div class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} leading-relaxed space-y-6">
-                <p>The information provided by {{ exporter.company_name|default:exporter.username }} on this website is for general informational purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the site.</p>
-                
-                <h2 class="text-xl font-bold mt-6 mb-2">External Links Disclaimer</h2>
-                <p>The Site may contain (or you may be sent through the Site) links to other websites or content belonging to or originating from third parties. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us.</p>
+                {% if exporter.custom_disclaimer %}
+                    <!-- Agar user ne custom text likha hai, toh woh dikhao -->
+                    <div class="prose max-w-none">
+                        {{ exporter.custom_disclaimer|linebreaks }}
+                    </div>
+                {% else %}
+                    <!-- Agar user ne kuch nahi likha, toh yeh default text dikhao -->
+                    <p>The information provided by {{ exporter.company_name|default:exporter.username }} on this website is for general informational purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the site.</p>
+                    
+                    <h2 class="text-xl font-bold mt-6 mb-2">External Links Disclaimer</h2>
+                    <p>The Site may contain (or you may be sent through the Site) links to other websites or content belonging to or originating from third parties. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us.</p>
 
-                <h2 class="text-xl font-bold mt-6 mb-2">Product Information</h2>
-                <p>Product images are for illustration purposes and actual product packaging and materials may contain more and/or different information than that shown on our website.</p>
+                    <h2 class="text-xl font-bold mt-6 mb-2">Product Information</h2>
+                    <p>Product images are for illustration purposes and actual product packaging and materials may contain more and/or different information than that shown on our website.</p>
+                {% endif %}
             </div>
         </div>
     </main>

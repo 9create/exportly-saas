@@ -22,17 +22,25 @@
         <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} p-10 md:p-14 rounded-3xl shadow-sm border">
             <h1 class="text-3xl md:text-4xl font-bold mb-8">Terms and Conditions</h1>
             <div class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} leading-relaxed space-y-6">
-                <p>Welcome to {{ exporter.company_name|default:exporter.username }}!</p>
-                <p>These terms and conditions outline the rules and regulations for the use of our website and services.</p>
-                
-                <h2 class="text-xl font-bold mt-6 mb-2">1. Terms</h2>
-                <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use our website if you do not agree to take all of the terms and conditions stated on this page.</p>
-                
-                <h2 class="text-xl font-bold mt-6 mb-2">2. Quotations and Orders</h2>
-                <p>All quotations provided through this website are subject to availability and final confirmation. Prices are subject to change based on market conditions and shipping requirements.</p>
+                {% if exporter.custom_terms_conditions %}
+                    <!-- Agar user ne custom text likha hai, toh woh dikhao -->
+                    <div class="prose max-w-none">
+                        {{ exporter.custom_terms_conditions|linebreaks }}
+                    </div>
+                {% else %}
+                    <!-- Agar user ne kuch nahi likha, toh yeh default text dikhao -->
+                    <p>Welcome to {{ exporter.company_name|default:exporter.username }}!</p>
+                    <p>These terms and conditions outline the rules and regulations for the use of our website and services.</p>
+                    
+                    <h2 class="text-xl font-bold mt-6 mb-2">1. Terms</h2>
+                    <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use our website if you do not agree to take all of the terms and conditions stated on this page.</p>
+                    
+                    <h2 class="text-xl font-bold mt-6 mb-2">2. Quotations and Orders</h2>
+                    <p>All quotations provided through this website are subject to availability and final confirmation. Prices are subject to change based on market conditions and shipping requirements.</p>
 
-                <h2 class="text-xl font-bold mt-6 mb-2">3. Disclaimer</h2>
-                <p>The materials on this website are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability.</p>
+                    <h2 class="text-xl font-bold mt-6 mb-2">3. Disclaimer</h2>
+                    <p>The materials on this website are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties or conditions of merchantability.</p>
+                {% endif %}
             </div>
         </div>
     </main>

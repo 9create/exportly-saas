@@ -17,6 +17,11 @@ class User(AbstractUser):
     current_plan = models.CharField(max_length=20, default='free') 
     trial_ends_at = models.DateTimeField(blank=True, null=True)
     brand_color = models.CharField(max_length=7, default="#3758F9")
+    
+    # NAYA: Custom Legal Pages Text
+    custom_privacy_policy = models.TextField(blank=True, null=True)
+    custom_terms_conditions = models.TextField(blank=True, null=True)
+    custom_disclaimer = models.TextField(blank=True, null=True)
 
     @property
     def is_trial_active(self):

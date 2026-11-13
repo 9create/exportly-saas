@@ -26,16 +26,24 @@
         <div class="{% if exporter.template_choice == 'modern' %}bg-gray-800 border-gray-700{% else %}bg-white border-gray-100{% endif %} p-10 md:p-14 rounded-3xl shadow-sm border">
             <h1 class="text-3xl md:text-4xl font-bold mb-8">Privacy Policy</h1>
             <div class="{% if exporter.template_choice == 'modern' %}text-gray-300{% else %}text-gray-700{% endif %} leading-relaxed space-y-6">
-                <p>At {{ exporter.company_name|default:exporter.username }}, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by us and how we use it.</p>
-                
-                <h2 class="text-xl font-bold mt-6 mb-2">Information We Collect</h2>
-                <p>When you fill out an inquiry form or contact us, we may collect personal information such as your name, email address, country, and message. We use this information solely to respond to your inquiries and provide our export services.</p>
-                
-                <h2 class="text-xl font-bold mt-6 mb-2">How We Use Your Information</h2>
-                <p>We use the information we collect to communicate with you, understand your requirements, process your quotations, and improve our website's user experience. We do not sell or share your personal data with third parties.</p>
+                {% if exporter.custom_privacy_policy %}
+                    <!-- Agar user ne custom text likha hai, toh woh dikhao -->
+                    <div class="prose max-w-none">
+                        {{ exporter.custom_privacy_policy|linebreaks }}
+                    </div>
+                {% else %}
+                    <!-- Agar user ne kuch nahi likha, toh yeh default text dikhao -->
+                    <p>At {{ exporter.company_name|default:exporter.username }}, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by us and how we use it.</p>
+                    
+                    <h2 class="text-xl font-bold mt-6 mb-2">Information We Collect</h2>
+                    <p>When you fill out an inquiry form or contact us, we may collect personal information such as your name, email address, country, and message. We use this information solely to respond to your inquiries and provide our export services.</p>
+                    
+                    <h2 class="text-xl font-bold mt-6 mb-2">How We Use Your Information</h2>
+                    <p>We use the information we collect to communicate with you, understand your requirements, process your quotations, and improve our website's user experience. We do not sell or share your personal data with third parties.</p>
 
-                <h2 class="text-xl font-bold mt-6 mb-2">Contact Us</h2>
-                <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
+                    <h2 class="text-xl font-bold mt-6 mb-2">Contact Us</h2>
+                    <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
+                {% endif %}
             </div>
         </div>
     </main>

@@ -75,6 +75,10 @@ def update_profile_view(request):
         user.instagram_link = request.POST.get('instagram_link')
         user.facebook_link = request.POST.get('facebook_link')
         
+        # NAYA: Custom Legal Pages Save karna
+        user.custom_privacy_policy = request.POST.get('custom_privacy_policy')
+        user.custom_terms_conditions = request.POST.get('custom_terms_conditions')
+        user.custom_disclaimer = request.POST.get('custom_disclaimer')
         
         if 'cover_image' in request.FILES:
             user.cover_image = request.FILES['cover_image']

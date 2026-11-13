@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Exportly</title>
     <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Driver.js CSS for Product Tour -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+    <!-- Driver.js JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style> 
         body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } 
@@ -41,11 +45,11 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 Overview
             </a>
-            <a href="{% url 'add_product' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+            <a id="tour-products" href="{% url 'add_product' %}" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 Products
             </a>
-            <a href="{% url 'inquiry_list' %}" class="flex items-center justify-between text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+            <a id="tour-inquiries" href="{% url 'inquiry_list' %}" class="flex items-center justify-between text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     Inquiries
@@ -62,7 +66,7 @@
         </nav>
 
         <div class="p-4 border-t border-gray-100 space-y-1">
-            <a href="{% url 'public_site' request.user.username %}" target="_blank" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
+            <a id="tour-live-site" href="{% url 'public_site' request.user.username %}" target="_blank" class="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 px-3 py-2.5 rounded-lg font-medium transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                 View Live Site
             </a>
@@ -127,7 +131,7 @@
             {% endif %}
 
             <!-- 1-Click Website Builder Banner -->
-            <div class="mb-8 bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-lg relative overflow-hidden">
+            <div id="tour-banner"class="mb-8 bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between shadow-lg relative overflow-hidden">
                 <!-- Background Design -->
                 <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-10 rounded-full blur-2xl"></div>
                 
@@ -483,6 +487,64 @@
                 modal.classList.remove('flex');
             }, 300);
         }
+    </script>
+    <!-- Product Tour JavaScript (Driver.js) -->
+    <script>
+        function startDashboardTour() {
+            const driver = window.driver.js.driver;
+            
+            const driverObj = driver({
+                showProgress: true,
+                nextBtnText: 'Next →',
+                prevBtnText: '← Back',
+                doneBtnText: 'Got it!',
+                steps: [
+                    { 
+                        element: '#tour-banner', 
+                        popover: { 
+                            title: '1-Click Website Builder', 
+                            description: 'Welcome to Exportly! Click here to generate your professional export website instantly using our AI Wizard.' 
+                        } 
+                    },
+                    { 
+                        element: '#tour-products', 
+                        popover: { 
+                            title: 'Manage Products', 
+                            description: 'Add your products here. You can also generate AI descriptions and PDF quotations.' 
+                        } 
+                    },
+                    { 
+                        element: '#tour-inquiries', 
+                        popover: { 
+                            title: 'Buyer Inquiries', 
+                            description: 'All messages from potential buyers will land here. You will also get notifications here.' 
+                        } 
+                    },
+                    { 
+                        element: '#tour-live-site', 
+                        popover: { 
+                            title: 'View Live Site', 
+                            description: 'Click here anytime to see how your public website looks to buyers.' 
+                        } 
+                    }
+                ]
+            });
+
+            driverObj.drive();
+        }
+
+        // Automatically start the tour for new users (only once)
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if user has already seen the tour using browser storage
+            if (!localStorage.getItem('hasSeenExportlyTour')) {
+                // Add a slight delay so the page loads properly before the tour starts
+                setTimeout(() => {
+                    startDashboardTour();
+                    // Set the flag so it doesn't show again
+                    localStorage.setItem('hasSeenExportlyTour', 'true');
+                }, 1000); 
+            }
+        });
     </script>
 </body>
 </html>
