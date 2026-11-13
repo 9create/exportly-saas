@@ -239,6 +239,11 @@ def sitemap_view(request, username):
     for page in pages:
         xml_content += f'  <url>\n    <loc>{base_url}/{page.slug}/</loc>\n    <priority>0.6</priority>\n  </url>\n'
         
+    # 4. Legal Pages (NAYA)
+    xml_content += f'  <url>\n    <loc>{base_url}/privacy/</loc>\n    <priority>0.3</priority>\n  </url>\n'
+    xml_content += f'  <url>\n    <loc>{base_url}/terms/</loc>\n    <priority>0.3</priority>\n  </url>\n'
+    xml_content += f'  <url>\n    <loc>{base_url}/disclaimer/</loc>\n    <priority>0.3</priority>\n  </url>\n'
+        
     xml_content += '</urlset>'
     
     return HttpResponse(xml_content, content_type="application/xml")
