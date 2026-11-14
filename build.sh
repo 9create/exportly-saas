@@ -20,5 +20,5 @@ if python manage.py shell -c "from django.contrib.auth import get_user_model; Us
     echo "Superuser 'admin' already exists. Skipping creation."
 else
     echo "Creating superuser 'admin'..."
-    python manage.py createsuperuser --no-input
+    python manage.py createsuperuser --no-input --username admin --email admin@exportly.com
 fi
