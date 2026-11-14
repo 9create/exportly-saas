@@ -174,8 +174,22 @@
     </section>
     <!-- 4. Footer -->
     <footer class="bg-white border-t border-gray-100 py-10 text-center text-gray-500 text-sm">
-        <p class="font-medium">&copy; 2026 Exportly. All rights reserved.</p>
-        <p class="mt-2 text-xs text-gray-400">Empowering new exporters globally.</p>
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <!-- Left Side: Copyright -->
+            <div class="md:text-left text-center">
+                <p class="font-medium text-gray-900">&copy; 2026 Exportly. All rights reserved.</p>
+                <p class="mt-1 text-xs text-gray-400">Empowering new exporters globally.</p>
+            </div>
+
+            <!-- Right Side: Legal Links -->
+            <div class="flex flex-wrap justify-center gap-6 font-medium">
+                <a href="{% url 'platform_privacy' %}" class="hover:text-gray-900 transition">Privacy Policy</a>
+                <a href="{% url 'platform_terms' %}" class="hover:text-gray-900 transition">Terms of Service</a>
+                <a href="{% url 'platform_disclaimer' %}" class="hover:text-gray-900 transition">Disclaimer</a>
+            </div>
+
+        </div>
     </footer>
 
     <!-- Pricing Toggle JavaScript -->

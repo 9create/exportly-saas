@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Exportly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } </style>
+</head>
+<body class="bg-[#f9fafb] text-gray-900 min-h-screen flex flex-col">
+
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="{% url 'home' %}" class="text-2xl font-bold tracking-tight text-blue-600">Exportly</a>
+                <button onclick="goBack()" class="text-sm font-medium text-gray-600 hover:text-gray-900 flex items-center gap-1">&larr; Back</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full">
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Exportly Privacy Policy</h1>
+            <p class="text-sm text-gray-500 mb-8 border-b pb-4">Last updated: November 14, 2026</p>
+
+            <div class="prose prose-blue max-w-none text-gray-600 space-y-6">
+                <p>At <strong>Exportly</strong> ("we," "our," or "us"), accessible from our platform, one of our main priorities is the privacy of our visitors and users. This Privacy Policy document contains types of information that is collected and recorded by Exportly and how we use it. If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">1. Information We Collect</h2>
+                <p>We collect information to provide better services to our users. The types of information we collect include:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Personal Information:</strong> When you register, we collect your name, email address, company name, phone number, and password.</li>
+                    <li><strong>Business Data:</strong> We collect the products, images, pages, and text you add to your Exportly website.</li>
+                    <li><strong>Usage Data:</strong> We may collect information on how you interact with our platform, such as IP address, browser type, pages visited, and time spent.</li>
+                    <li><strong>Payment Information:</strong> If you upgrade to a paid plan, we use third-party payment processors (like Razorpay/Stripe). We do not store your full credit card details on our servers.</li>
+                </ul>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">2. How We Use Your Information</h2>
+                <p>Exportly uses the collected data for various purposes:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>To provide and maintain our SaaS platform.</li>
+                    <li>To manage your account and provide you with customer support.</li>
+                    <li>To process payments and prevent fraudulent transactions.</li>
+                    <li>To use AI features (like generating product descriptions), user input text may be sent to third-party API providers (e.g., Groq). These providers do not retain your data for training.</li>
+                    <li>To send you updates, marketing communications, and important security alerts.</li>
+                </ul>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">3. Cookies and Web Beacons</h2>
+                <p>Like any other platform, Exportly uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">4. Third-Party Privacy Policies</h2>
+                <p>Exportly's Privacy Policy does not apply to other advertisers or websites. We use third-party services (such as Cloudinary for image storage, and AI providers). Thus, we are advising you to consult the respective Privacy Policies of these third-party servers for more detailed information.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">5. Data Security & Retention</h2>
+                <p>We implement industry-standard security measures to protect your data. We retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy. If you delete your account, we will delete your personal data and website data from our active servers.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">6. Your Data Protection Rights (GDPR & CCPA)</h2>
+                <p>We want to make sure you are fully aware of all of your data protection rights. Every user is entitled to the following:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>The right to access:</strong> You have the right to request copies of your personal data.</li>
+                    <li><strong>The right to rectification:</strong> You have the right to request that we correct any information you believe is inaccurate.</li>
+                    <li><strong>The right to erasure:</strong> You have the right to request that we erase your personal data, under certain conditions.</li>
+                </ul>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">7. Changes to This Privacy Policy</h2>
+                <p>We may update our Privacy Policy from time to time. Thus, we advise you to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+
+                <div class="mt-10 p-6 bg-blue-50 rounded-xl border border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Contact Us</h3>
+                    <p class="text-sm">If you have any questions about this Privacy Policy, you can contact us at:<br>
+                    <strong>Email:</strong> support@exportly.com<br>
+                    <strong>Address:</strong> [Your Business Address Here]</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500">
+            &copy; 2026 Exportly. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        function goBack() {
+            // Agar user kisi page se aaya hai (history hai), toh wapas bhejo
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                // Agar direct aaya hai (jaise bookmark se), toh Home bhejo
+                window.location.href = "{% url 'home' %}";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Exportly</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; } </style>
+</head>
+<body class="bg-[#f9fafb] text-gray-900 min-h-screen flex flex-col">
+
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="{% url 'home' %}" class="text-2xl font-bold tracking-tight text-blue-600">Exportly</a>
+                <button onclick="goBack()" class="text-sm font-medium text-gray-600 hover:text-gray-900 flex items-center gap-1">&larr; Back</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full">
+        <div class="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Terms of Service</h1>
+            <p class="text-sm text-gray-500 mb-8 border-b pb-4">Last updated: November 14, 2026</p>
+
+            <div class="prose prose-blue max-w-none text-gray-600 space-y-6">
+                <p>Welcome to <strong>Exportly</strong>! These terms and conditions outline the rules and regulations for the use of Exportly's Website and SaaS Platform. By accessing this website, we assume you accept these terms and conditions. Do not continue to use Exportly if you do not agree to take all of the terms and conditions stated on this page.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">1. Definitions</h2>
+                <p>"Platform", "We", "Our" refers to Exportly. "User", "You" refers to the person or entity signing up and creating a website using our platform. "Service" refers to the website builder, AI tools, and hosting provided by Exportly.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">2. Account Registration & Security</h2>
+                <p>To use our services, you must register for an account. You agree to:</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>Provide accurate, current, and complete information during registration.</li>
+                    <li>Maintain the security of your password and account. You are fully responsible for all activities that occur under your account.</li>
+                    <li>Notify us immediately of any unauthorized use of your account.</li>
+                </ul>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">3. Subscriptions, Trials, and Payments</h2>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Free Trial:</strong> New users may be offered a free trial (e.g., 15 days). At the end of the trial, your account will revert to the Free Plan unless you upgrade.</li>
+                    <li><strong>Billing:</strong> If you purchase a Pro plan (e.g., ₹499/month), you agree to pay all applicable fees. Fees are non-refundable except as required by law.</li>
+                    <li><strong>Changes:</strong> We reserve the right to change our pricing at any time. We will provide notice before any price changes apply to you.</li>
+                </ul>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">4. User Content & Responsibilities</h2>
+                <p>You retain all rights to the content (text, images, product data) you upload to your Exportly website. However, you are solely responsible for your content. You agree NOT to:</p>
+                <ul class="list-disc pl-5 space-y-2 text-red-600 font-medium">
+                    <li>Sell or promote illegal, counterfeit, or restricted products (e.g., narcotics, weapons).</li>
+                    <li>Violate any local, national, or international export laws.</li>
+                    <li>Upload malicious code, spam, or content that infringes on intellectual property rights.</li>
+                </ul>
+                <p class="mt-2">Exportly reserves the right to suspend or terminate any account that violates these rules, without prior notice.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">5. Intellectual Property</h2>
+                <p>Unless otherwise stated, Exportly owns the intellectual property rights for all material on the platform (including the code, design, and themes). You may not copy, reproduce, or resell our platform's code or themes.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">6. Limitation of Liability</h2>
+                <p>To the maximum extent permitted by law, Exportly shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits, data, or business opportunities resulting from your use of the platform or your inability to use the platform.</p>
+                <p class="mt-2">We do not guarantee that your website will generate sales or inquiries.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">7. Termination</h2>
+                <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use the Service will immediately cease.</p>
+
+                <h2 class="text-xl font-bold text-gray-900 mt-8 mb-3">8. Governing Law</h2>
+                <p>These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. Any disputes shall be subject to the exclusive jurisdiction of the courts located in [Your City/State, India].</p>
+
+                <div class="mt-10 p-6 bg-blue-50 rounded-xl border border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Contact Us</h3>
+                    <p class="text-sm">If you have any questions about these Terms, please contact us at:<br>
+                    <strong>Email:</strong> support@exportly.com</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500">
+            &copy; 2026 Exportly. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        function goBack() {
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = "{% url 'home' %}";
+            }
+        }
+    </script>
+</body>
+</html>
