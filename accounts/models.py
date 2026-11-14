@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from django.utils.text import slugify
 
 class User(AbstractUser):
     is_exporter = models.BooleanField(default=True)
@@ -104,4 +105,35 @@ class PlatformSettings(models.Model):
         return obj
 
     def __str__(self):
-        return "Platform Settings"      
+        return "Platform Settings" 
+
+
+
+class BlogPost(models.Model):
+    CATEGORY_CHOICES = (
+        ('basics', 'Export Basics'),
+        ('shipping', 'Shipping & Logistics'),
+        ('docs', 'Documentation'),
+        ('finance', 'Payments & Finance'),
+    )
+
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='basics')
+    content = models.TextField(help_text="Write your article here. You can use HTML tags.")
+    
+    # Video support (YouTube/Cloudinary link)
+    video_url = models.URLField(blank=True, null=True, help_text="Paste YouTube embed link here")
+    
+    # SEO & Extra Info
+    cover_image = models.ImageField(upload_to='blog_covers/', blank=True, null=True)
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title

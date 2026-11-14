@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, SitePage, PricingPlan, PromoCode, PlatformSettings
+from .models import BlogPost
 
 class CustomUserAdmin(UserAdmin):
     # Admin panel ki list me ye fields dikhenge
@@ -16,6 +17,7 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(PricingPlan)
 admin.site.register(PromoCode)
+admin.site.register(SitePage)
 
 
 @admin.register(PlatformSettings)
@@ -23,3 +25,10 @@ class PlatformSettingsAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         # Sirf ek hi settings ban sake
         return not PlatformSettings.objects.exists()
+
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'is_published', 'created_at')
+    list_filter = ('category', 'is_published')
+    search_fields = ('title', 'content')
+    prepopulated_fields = {'slug': ('title',)} # Title likhte hi slug auto-fill hoga    

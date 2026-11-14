@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from accounts.views import home_view
+from accounts.views import home_view, blog_list_view,blog_detail_view
 from users.views import signup_view,login_view, dashboard_view, logout_view
 from django.conf import settings
 from django.conf.urls.static import static
@@ -33,6 +33,8 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
+    path('blog/', blog_list_view, name='blog_list'),
+    path('blog/<slug:slug>/', blog_detail_view, name='blog_detail'),
     path('signup/', signup_view, name='signup'),
     path('login/', login_view, name='login'),
     path('platform/privacy/', auth_views.TemplateView.as_view(template_name='platform_privacy.html'), name='platform_privacy'),
