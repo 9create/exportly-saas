@@ -22,3 +22,5 @@ else
     echo "Creating superuser 'admin'..."
     python manage.py createsuperuser --no-input --username admin --email admin@exportly.com
 fi
+# Reset password for admin
+python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); u = User.objects.get(username='admin'); u.set_password('ExportlyAdmin@2026'); u.save()"
