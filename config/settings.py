@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',            # <-- Yeh staticfiles se pehle hona chahiye
     'django.contrib.staticfiles',
     'cloudinary',                    # <-- Yeh staticfiles ke baad
     'accounts',
@@ -154,4 +153,3 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
